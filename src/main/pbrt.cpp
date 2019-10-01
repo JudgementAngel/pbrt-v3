@@ -41,7 +41,7 @@
 
 using namespace pbrt;
 
-//#@!['usage'] usage()一般是程序里自定义来提示用户怎么使用程序的。是一个自定义函数。
+// #@!['usage'] usage()一般是程序里自定义来提示用户怎么使用程序的。是一个自定义函数。
 static void usage(const char *msg = nullptr) {
     if (msg)
         fprintf(stderr, "pbrt: %s\n\n", msg);
@@ -77,8 +77,8 @@ Reformatting options:
 // 主程序入口
 // main program
 int main(int argc, char *argv[]) {
-    google::InitGoogleLogging(argv[0]);
-    FLAGS_stderrthreshold = 1; // Warning and above.
+    google::InitGoogleLogging(argv[0]); // 初始化google的日志记录库
+    FLAGS_stderrthreshold = 1; // Warning and above. // 级别 大于等于 此标志 的日志消息除了日志文件外，还会自动发送到stderr
 
     Options options;
     std::vector<std::string> filenames;

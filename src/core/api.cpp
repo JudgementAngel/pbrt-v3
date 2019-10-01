@@ -363,11 +363,11 @@ void TransformCache::Grow() {
 
 // API Static Data
 enum class APIState { Uninitialized, OptionsBlock, WorldBlock };
-static APIState currentApiState = APIState::Uninitialized;
+static APIState currentApiState = APIState::Uninitialized; // 表示当前API的状态
 static TransformSet curTransform;
 static uint32_t activeTransformBits = AllTransformsBits;
 static std::map<std::string, TransformSet> namedCoordinateSystems;
-static std::unique_ptr<RenderOptions> renderOptions;
+static std::unique_ptr<RenderOptions> renderOptions; // @cpp? unique_ptr
 static GraphicsState graphicsState;
 static std::vector<GraphicsState> pushedGraphicsStates;
 static std::vector<TransformSet> pushedTransforms;
@@ -874,12 +874,13 @@ Film *MakeFilm(const std::string &name, const ParamSet &paramSet,
 // API Function Definitions
 void pbrtInit(const Options &opt) {
     PbrtOptions = opt;
+
     // API Initialization
     if (currentApiState != APIState::Uninitialized)
-        Error("pbrtInit() has already been called.");
+        Error("pbrtInit() has already been called."); // @? error.cpp 具体做了什么？
     currentApiState = APIState::OptionsBlock;
-    renderOptions.reset(new RenderOptions);
-    graphicsState = GraphicsState();
+    renderOptions.reset(new RenderOptions); // 重置当前的RenderOptions
+    graphicsState = GraphicsState(); // @? Graphics 包含了哪些内容？
     catIndentCount = 0;
 
     // General \pbrt Initialization

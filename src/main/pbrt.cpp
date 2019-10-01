@@ -41,35 +41,49 @@
 
 using namespace pbrt;
 
-// #@!['usage'] usage()一般是程序里自定义来提示用户怎么使用程序的。是一个自定义函数。
+// @cpp usage
 static void usage(const char *msg = nullptr) {
     if (msg)
         fprintf(stderr, "pbrt: %s\n\n", msg);
 
     fprintf(stderr, R"(usage: pbrt [<options>] <filename.pbrt...>
 Rendering options:
-  --cropwindow <x0,x1,y0,y1> Specify an image crop window.
-  --help               Print this help text.
-  --nthreads <num>     Use specified number of threads for rendering.
-  --outfile <filename> Write the final image to the given filename.
+渲染设置：
+  --cropwindow <x0,x1,y0,y1> Specify an image crop window. 指定图像裁剪窗口
+  --help               Print this help text. 打印帮助文本，即这条信息
+  --nthreads <num>     Use specified number of threads for rendering. 
+						指定渲染使用的线程数
+  --outfile <filename> Write the final image to the given filename. 
+						写入最终的图像到给定的文件，默认在pbrt.exe的目录
   --quick              Automatically reduce a number of quality settings to
-                       render more quickly.
-  --quiet              Suppress all text output other than error messages.
+                       render more quickly. 自动减少一些质量设置以更快地渲染。
+  --quiet              Suppress all text output other than error messages. 
+						禁止显示除错误消息以外的所有文本输出。						
 
 Logging options:
+日志信息设置：
   --logdir <dir>       Specify directory that log files should be written to.
+						指定一个log文件的输出路径
                        Default: system temp directory (e.g. $TMPDIR or /tmp).
+						默认：系统的temp目录（例如 $TMPDIR 或 /tmp）
   --logtostderr        Print all logging messages to stderr.
+						打印所有的日志信息到 stderr
   --minloglevel <num>  Log messages at or above this level (0 -> INFO,
                        1 -> WARNING, 2 -> ERROR, 3-> FATAL). Default: 0.
-  --v <verbosity>      Set VLOG verbosity.
+						记录大于或等于这个等级的日志信息
+						0 -> 普通，1 -> 警告，2 -> 错误，3 -> 致命，默认为 0
+  --v <verbosity>      Set VLOG verbosity. 设置VLOG的详细程度
 
 Reformatting options:
+重新格式化设置：
   --cat                Print a reformatted version of the input file(s) to
                        standard output. Does not render an image.
+						将输入文件的重新格式化版本打印到标准输出。 不渲染图像。
   --toply              Print a reformatted version of the input file(s) to
                        standard output and convert all triangle meshes to
                        PLY files. Does not render an image.
+						将输入文件的重新格式化版本打印到标准输出，
+						并将所有三角形网格转换为PLY文件。 不渲染图像。
 )");
     exit(msg ? 1 : 0);
 }
@@ -77,12 +91,16 @@ Reformatting options:
 // 主程序入口
 // main program
 int main(int argc, char *argv[]) {
+	// @! GoogleLogging
     google::InitGoogleLogging(argv[0]); // 初始化google的日志记录库
     FLAGS_stderrthreshold = 1; // Warning and above. // 级别 大于等于 此标志 的日志消息除了日志文件外，还会自动发送到stderr
 
-    Options options;
-    std::vector<std::string> filenames;
-    // Process command-line arguments
+	// @! options
+    Options options; // 根据命令参数设置的PBRT选项
+    std::vector<std::string> filenames; // 存放用于渲染的场景文件的绝对路径
+    
+	// 解析命令行参数，填充上面的option结构体 和 filenames
+	// Process command-line arguments
     for (int i = 1; i < argc; ++i) {
         if (!strcmp(argv[i], "--nthreads") || !strcmp(argv[i], "-nthreads")) {
             if (i + 1 == argc)
@@ -141,14 +159,18 @@ int main(int argc, char *argv[]) {
             filenames.push_back(argv[i]);
     }
 
+	// 打印欢迎横幅
     // Print welcome banner
     if (!options.quiet && !options.cat && !options.toPly) {
-        if (sizeof(void *) == 4)
+        // #@!['32-bits']
+		if (sizeof(void *) == 4)
             printf("*** WARNING: This is a 32-bit build of pbrt. It will crash "
                    "if used to render highly complex scenes. ***\n");
         printf("pbrt version 3 (built %s at %s) [Detected %d cores]\n",
                __DATE__, __TIME__, NumSystemCores());
+// @cpp NDEBUG
 #ifndef NDEBUG
+		// @?  GoogleLOG 和 Printf的区别
         LOG(INFO) << "Running debug build";
         printf("*** DEBUG BUILD ***\n");
 #endif // !NDEBUG
@@ -159,8 +181,9 @@ int main(int argc, char *argv[]) {
             "The source code to pbrt (but *not* the book contents) is covered "
             "by the BSD License.\n");
         printf("See the file LICENSE.txt for the conditions of the license.\n");
-        fflush(stdout);
+        fflush(stdout); // @cpp fflush
     }
+	// 使用options 初始化 pbrt
     pbrtInit(options);
     // Process scene description
     if (filenames.empty()) {

@@ -1,5 +1,6 @@
 
 /*
+版权声明：
     pbrt source code is Copyright(c) 1998-2016
                         Matt Pharr, Greg Humphreys, and Wenzel Jakob.
 
@@ -40,6 +41,7 @@
 
 using namespace pbrt;
 
+//#@!['usage'] usage()一般是程序里自定义来提示用户怎么使用程序的。是一个自定义函数。
 static void usage(const char *msg = nullptr) {
     if (msg)
         fprintf(stderr, "pbrt: %s\n\n", msg);
@@ -72,6 +74,7 @@ Reformatting options:
     exit(msg ? 1 : 0);
 }
 
+// 主程序入口
 // main program
 int main(int argc, char *argv[]) {
     google::InitGoogleLogging(argv[0]);

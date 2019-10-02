@@ -302,6 +302,7 @@ int NumSystemCores() {
     return std::max(1u, std::thread::hardware_concurrency());
 }
 
+// @TODO
 void ParallelInit() {
     CHECK_EQ(threads.size(), 0);
     int nThreads = MaxThreadIndex();

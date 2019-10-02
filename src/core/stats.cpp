@@ -204,6 +204,7 @@ void StatsAccumulator::Clear() {
 PBRT_THREAD_LOCAL uint64_t ProfilerState;
 static std::atomic<bool> profilerRunning{false};
 
+// @TODO
 void InitProfiler() {
     CHECK(!profilerRunning);
 
@@ -211,6 +212,9 @@ void InitProfiler() {
     // risk of its first access being in the signal handler (which in turn
     // would cause dynamic memory allocation, which is illegal in a signal
     // handler).
+	// 现在访问每个线程的ProfilerState变量，
+	// 因此不存在对其第一次访问位于信号处理程序中的风险
+	//（这反过来会导致动态内存分配，这在信号处理程序中是非法的）。
     ProfilerState = ProfToBits(Prof::SceneConstruction);
 
     ClearProfiler();

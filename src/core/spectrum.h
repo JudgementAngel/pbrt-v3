@@ -312,6 +312,8 @@ class SampledSpectrum : public CoefficientSpectrum<nSpectralSamples> {
         }
         return r;
     }
+
+	// @TODO
     static void Init() {
         // Compute XYZ matching functions for _SampledSpectrum_
         for (int i = 0; i < nSpectralSamples; ++i) {

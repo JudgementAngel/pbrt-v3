@@ -41,7 +41,7 @@
 
 namespace pbrt {
 
-static std::string searchDirectory;
+static std::string searchDirectory; // 搜索的目录
 
 #ifdef PBRT_IS_WINDOWS
 bool IsAbsolutePath(const std::string &filename) {
@@ -71,20 +71,26 @@ std::string ResolveFilename(const std::string &filename) {
         return searchDirectory + "\\" + filename;
 }
 
+// 根据输入的全路径，返回路径目录，不包含文件
 std::string DirectoryContaining(const std::string &filename) {
     // This code isn't tested but I believe it should work. Might need to add
     // some const_casts to make it compile though.
-    char drive[_MAX_DRIVE];
-    char dir[_MAX_DIR];
-    char ext[_MAX_EXT];
+	// 该代码未经测试，但我认为它可以工作。 
+	// 可能需要添加一些const_casts使其进行编译。
+	// @cpp `_MAX_***`
+    char drive[_MAX_DRIVE]; // 磁盘名
+    char dir[_MAX_DIR];	// 路径
+    char ext[_MAX_EXT]; // 后缀名
 
     errno_t err = _splitpath_s(filename.c_str(), drive, _MAX_DRIVE, dir,
-                               _MAX_DIR, nullptr, 0, ext, _MAX_EXT);
+                               _MAX_DIR, nullptr, 0, ext, _MAX_EXT); // 根据给出的路径分割路径名 // @cpp _splitpath_s // @cpp errno
+
+	// 处理返回一个路径，不包含文件后缀
     if (err == 0) {
         char fullDir[_MAX_PATH];
-        err = _makepath_s(fullDir, _MAX_PATH, drive, dir, nullptr, nullptr);
+        err = _makepath_s(fullDir, _MAX_PATH, drive, dir, nullptr, nullptr); // @cpp _makepath_s
         if (err == 0) return std::string(fullDir);
-    }
+    } 
     return filename;
 }
 

@@ -373,7 +373,7 @@ static std::vector<GraphicsState> pushedGraphicsStates;
 static std::vector<TransformSet> pushedTransforms;
 static std::vector<uint32_t> pushedActiveTransformBits;
 static TransformCache transformCache;
-int catIndentCount = 0;
+int catIndentCount = 0; // @? api::catIndentCount 做什么的？缩进计数？
 
 // API Forward Declarations
 std::vector<std::shared_ptr<Shape>> MakeShapes(const std::string &name,
@@ -875,21 +875,24 @@ Film *MakeFilm(const std::string &name, const ParamSet &paramSet,
 void pbrtInit(const Options &opt) {
     PbrtOptions = opt;
 
+	// API参数初始化
     // API Initialization
     if (currentApiState != APIState::Uninitialized)
         Error("pbrtInit() has already been called."); // @? error.cpp 具体做了什么？
     currentApiState = APIState::OptionsBlock;
     renderOptions.reset(new RenderOptions); // 重置当前的RenderOptions
     graphicsState = GraphicsState(); // @? Graphics 包含了哪些内容？
-    catIndentCount = 0;
+    catIndentCount = 0; 
 
+	// pbrt 一般内容的初始化
     // General \pbrt Initialization
-    SampledSpectrum::Init();
+    SampledSpectrum::Init(); // 采样频谱初始化
     ParallelInit();  // Threads must be launched before the profiler is
-                     // initialized.
-    InitProfiler();
+                     // initialized. 必须在初始化分析器之前启动线程。
+    InitProfiler();  // 初始化分析器
 }
 
+// @TODO
 void pbrtCleanup() {
     // API Cleanup
     if (currentApiState == APIState::Uninitialized)

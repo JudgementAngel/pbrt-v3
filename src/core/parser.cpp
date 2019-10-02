@@ -95,11 +95,13 @@ static char decodeEscaped(int ch) {
     return 0;  // NOTREACHED
 }
 
+// @$
 std::unique_ptr<Tokenizer> Tokenizer::CreateFromFile(
     const std::string &filename,
     std::function<void(const char *)> errorCallback) {
     if (filename == "-") {
         // Handle stdin by slurping everything into a string.
+		// 通过将所有内容包含在字符串中来处理stdin
         std::string str;
         int ch;
         while ((ch = getchar()) != EOF) str.push_back((char)ch);
@@ -1091,12 +1093,13 @@ static void parse(std::unique_ptr<Tokenizer> t) {
     }
 }
 
+// pbrt 解析文件
 void pbrtParseFile(std::string filename) {
-    if (filename != "-") SetSearchDirectory(DirectoryContaining(filename));
+    if (filename != "-") SetSearchDirectory(DirectoryContaining(filename)); // 根据输入文件名设置搜索目录
 
-    auto tokError = [](const char *msg) { Error("%s", msg); exit(1); };
+    auto tokError = [](const char *msg) { Error("%s", msg); exit(1); }; // @cpp? Lambda
     std::unique_ptr<Tokenizer> t =
-        Tokenizer::CreateFromFile(filename, tokError);
+        Tokenizer::CreateFromFile(filename, tokError); 
     if (!t) return;
     parse(std::move(t));
 }

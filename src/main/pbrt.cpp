@@ -185,15 +185,20 @@ int main(int argc, char *argv[]) {
     }
 	// 使用options 初始化 pbrt
     pbrtInit(options);
+
+	// 处理场景描述
+	// 这里是主循环的入口，跑完这里意味着渲染结束
     // Process scene description
     if (filenames.empty()) {
+		// 从标准输入解析场景
         // Parse scene from standard input
         pbrtParseFile("-");
     } else {
+		// 从输入的文件解析场景
         // Parse scene from input files
         for (const std::string &f : filenames)
             pbrtParseFile(f);
     }
-    pbrtCleanup();
+    pbrtCleanup(); // pbrt相关清理工作
     return 0;
 }

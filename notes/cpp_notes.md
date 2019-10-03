@@ -146,3 +146,30 @@ errno 值是在出现各种错误条件时分配给 [errno](https://docs.microso
 
 
 
+##### @cpp EOF
+
+EOF是一个计算机术语，为End Of File的缩写，在操作系统中表示资料源无更多的资料可读取。资料源通常称为档案或串流。通常在文本的最后存在此字符表示资料结束。
+
+在Doc窗口中 ctrl+z 输入文件结束标志
+
+
+
+##### @cpp push_back
+
+string::push_back 表示在字符串末尾再添加 单个字符
+
+
+
+
+
+##### @cpp? C++11 引用折叠
+
+
+
+
+
+##### @cpp? std::move()
+
+`std::move`和`std::forward`本质就是一个转换函数，`std::move`执行到右值的无条件转换，`std::forward`执行到右值的有条件转换，在参数都是右值时，二者就是等价的。
+
+其实std::move和std::forward就是在C++11基本规则之上封装的语法糖。

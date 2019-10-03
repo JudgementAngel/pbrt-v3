@@ -101,6 +101,7 @@ class string_view {
 
 // Tokenizer converts a single pbrt scene file into a series of tokens.
 // Tokenizer 将单个场景转化为多一系列 tokens
+// @? Tokenizer
 class Tokenizer {
   public:
     static std::unique_ptr<Tokenizer> CreateFromFile(

@@ -99,15 +99,15 @@ static char decodeEscaped(int ch) {
 std::unique_ptr<Tokenizer> Tokenizer::CreateFromFile(
     const std::string &filename,
     std::function<void(const char *)> errorCallback) {
-    if (filename == "-") {
+	if (filename == "-") {
         // Handle stdin by slurping everything into a string.
 		// 通过将所有内容包含在字符串中来处理stdin
         std::string str;
         int ch;
-        while ((ch = getchar()) != EOF) str.push_back((char)ch);
+        while ((ch = getchar()) != EOF) str.push_back((char)ch); // 获取输入直到文件结尾  // @cpp EOF // @cpp push_back
         // std::make_unique...
         return std::unique_ptr<Tokenizer>(
-            new Tokenizer(std::move(str), std::move(errorCallback)));
+            new Tokenizer(std::move(str), std::move(errorCallback))); // @cpp? std::move()
     }
 
 #ifdef PBRT_HAVE_MMAP

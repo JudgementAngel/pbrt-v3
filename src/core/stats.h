@@ -278,6 +278,7 @@ void ReportProfilerResults(FILE *dest);
 void ClearProfiler();
 void CleanupProfiler();
 
+// @TODO
 // Statistics Macros
 #define STAT_COUNTER(title, var)                           \
     static PBRT_THREAD_LOCAL int64_t var;                  \

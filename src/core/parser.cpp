@@ -65,6 +65,7 @@ static std::string toString(string_view s) {
     return std::string(s.data(), s.size());
 }
 
+// tokenizer 占用的内存
 STAT_MEMORY_COUNTER("Memory/Tokenizer buffers", tokenizerMemory);
 
 static char decodeEscaped(int ch) {
@@ -95,7 +96,6 @@ static char decodeEscaped(int ch) {
     return 0;  // NOTREACHED
 }
 
-// @$
 std::unique_ptr<Tokenizer> Tokenizer::CreateFromFile(
     const std::string &filename,
     std::function<void(const char *)> errorCallback) {
@@ -137,20 +137,22 @@ std::unique_ptr<Tokenizer> Tokenizer::CreateFromFile(
     return std::unique_ptr<Tokenizer>(
         new Tokenizer(ptr, len, filename, std::move(errorCallback)));
 #elif defined(PBRT_IS_WINDOWS)
+	// @cpp? C++11 lambda
+	// 大致意思是输出错误信息？
     auto errorReportLambda = [&errorCallback,
                               &filename]() -> std::unique_ptr<Tokenizer> {
-        LPSTR messageBuffer = nullptr;
+        LPSTR messageBuffer = nullptr; // @cpp LPSTR
         FormatMessageA(
             FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
                 FORMAT_MESSAGE_IGNORE_INSERTS,
             NULL, ::GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-            (LPSTR)&messageBuffer, 0, NULL);
+            (LPSTR)&messageBuffer, 0, NULL); // @cpp FormatMessageA
 
         errorCallback(
             StringPrintf("%s: %s", filename.c_str(), messageBuffer).c_str());
 
-        LocalFree(messageBuffer);
-        return nullptr;
+        LocalFree(messageBuffer); // @cpp LocalFree function
+        return nullptr; // @$
     };
 
     HANDLE fileHandle =
@@ -206,6 +208,7 @@ std::unique_ptr<Tokenizer> Tokenizer::CreateFromString(
         new Tokenizer(std::move(str), std::move(errorCallback)));
 }
 
+// 当使用默认输入时调用到这个构造函数
 Tokenizer::Tokenizer(std::string str,
                      std::function<void(const char *)> errorCallback)
     : loc("<stdin>"),

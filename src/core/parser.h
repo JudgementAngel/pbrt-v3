@@ -49,8 +49,9 @@
 namespace pbrt {
 
 // Loc represents a position in a file being parsed.
+// Loc表示要解析的文件中的位置
 struct Loc {
-    Loc() = default;
+    Loc() = default; // @cpp 默认函数default
     Loc(const std::string &filename) : filename(filename) {}
 
     std::string filename;
@@ -162,6 +163,7 @@ class Tokenizer {
 
     // Pointers to the current position inthe file and one past the end of
     // the file.
+	// 指向文件中当前位置的指针，指向文件末尾的位置。
     const char *pos, *end;
 
     // If there are escaped characters in the string, we can't just return

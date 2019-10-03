@@ -160,16 +160,251 @@ string::push_back 表示在字符串末尾再添加 单个字符
 
 
 
-
-
 ##### @cpp? C++11 引用折叠
-
-
 
 
 
 ##### @cpp? std::move()
 
+[C++11 std::move和std::forward](https://www.jianshu.com/p/b90d1091a4ff)
+
 `std::move`和`std::forward`本质就是一个转换函数，`std::move`执行到右值的无条件转换，`std::forward`执行到右值的有条件转换，在参数都是右值时，二者就是等价的。
 
 其实std::move和std::forward就是在C++11基本规则之上封装的语法糖。
+
+```c++
+class Foo
+{
+public:
+    std::string member;
+
+    // Copy member.
+    Foo(const std::string& m): member(m) {}
+
+    // Move member.
+    Foo(std::string&& m): member(std::move(m)) {}
+};
+```
+
+上述`Foo(std::string&& member)`中的member是rvalue reference，但是member却是一个左值lvalue，因此在初始化列表中需要使用`std::move`将其转换成rvalue。
+
+标准库中`move`的定义如下：
+
+```C++
+template<typename T>
+typename remove_reference<T>::type && move(T&& t)
+{
+    return static_cast<typename remove_reference<T>::type &&>(t);
+}
+```
+
+
+
+##### @cpp 默认函数default
+
+[c++11 类默认函数的控制："=default" 和 "=delete"函数](https://www.cnblogs.com/lsgxeva/p/7787438.html)
+
+```c++
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <map>
+
+//c++11 类默认函数的控制："=default" 和 "=delete"函数
+
+/*
+C++ 的类有四类特殊成员函数，它们分别是：默认构造函数、析构函数、拷贝构造函数以及拷贝赋值运算符。
+这些类的特殊成员函数负责创建、初始化、销毁，或者拷贝类的对象。
+如果程序员没有显式地为一个类定义某个特殊成员函数，而又需要用到该特殊成员函数时，则编译器会隐式的为这个类生成一个默认的特殊成员函数。
+*/
+
+// C++11 标准引入了一个新特性："=default"函数。程序员只需在函数声明后加上“=default;”，就可将该函数声明为 "=default"函数，编译器将为显式声明的 "=default"函数自动生成函数体。
+class X
+{ 
+public: 
+    X() = default; //该函数比用户自己定义的默认构造函数获得更高的代码效率
+    X(int i)
+    { 
+        a = i; 
+    }
+
+private: 
+    int a; 
+}; 
+
+X obj;
+
+// "=default"函数特性仅适用于类的特殊成员函数，且该特殊成员函数没有默认参数。
+class X1
+{
+public:
+    int f() = default;      // err , 函数 f() 非类 X 的特殊成员函数
+    X1(int, int) = default;  // err , 构造函数 X1(int, int) 非 X 的特殊成员函数
+    X1(int = 1) = default;   // err , 默认构造函数 X1(int=1) 含有默认参数
+};
+
+// "=default"函数既可以在类体里（inline）定义，也可以在类体外（out-of-line）定义。
+class X2
+{
+public:
+    X2() = default; //Inline defaulted 默认构造函数
+    X2(const X&);
+    X2& operator = (const X&);
+    ~X2() = default;  //Inline defaulted 析构函数
+};
+
+X2::X2(const X&) = default;  //Out-of-line defaulted 拷贝构造函数
+X2& X2::operator= (const X2&) = default;   //Out-of-line defaulted  拷贝赋值操作符
+
+
+// 为了能够让程序员显式的禁用某个函数，C++11 标准引入了一个新特性："=delete"函数。程序员只需在函数声明后上“=delete;”，就可将该函数禁用。
+class X3
+{
+public:
+    X3();
+    X3(const X3&) = delete;  // 声明拷贝构造函数为 deleted 函数
+    X3& operator = (const X3 &) = delete; // 声明拷贝赋值操作符为 deleted 函数
+};
+
+// "=delete"函数特性还可用于禁用类的某些转换构造函数，从而避免不期望的类型转换
+class X4
+{
+public:
+    X4(double)
+    {
+
+    }
+
+    X4(int) = delete;
+};
+
+// "=delete"函数特性还可以用来禁用某些用户自定义的类的 new 操作符，从而避免在自由存储区创建类的对象
+class X5
+{
+public:
+    void *operator new(size_t) = delete;
+    void *operator new[](size_t) = delete;
+};
+
+
+void mytest()
+{
+    X4 obj1;
+    X4 obj2=obj1;   // 错误，拷贝构造函数被禁用
+
+    X4 obj3;
+    obj3=obj1;     // 错误，拷贝赋值操作符被禁用
+
+    X5 *pa = new X5;      // 错误，new 操作符被禁用
+    X5 *pb = new X5[10];  // 错误，new[] 操作符被禁用
+
+    return;
+}
+
+
+int main()
+{
+    mytest();
+
+    system("pause");
+    return 0;
+}
+```
+
+
+
+##### @cpp? C++11 lambda
+
+C++ 11 中的 Lambda 表达式用于定义并创建匿名的函数对象，以简化编程工作。
+Lambda 的语法形式如下：
+
+```C++
+[函数对象参数] (操作符重载函数参数) mutable 或 exception 声明 -> 返回值类型 {函数体}
+```
+
+可以看到，Lambda 主要分为五个部分：[函数对象参数]、(操作符重载函数参数)、mutable 或 exception 声明、-> 返回值类型、{函数体}.
+
+
+
+##### @cpp LPSTR
+
+Long Pointer String 
+
+LPSTR和LPWSTR是 Win32 和 VC++ 所使用的一种字符串数据类型。LPSTR被定义成是一个指向以NULL(‘\0’)结尾的32位ANSI 字符 数组指针，而LPWSTR是一个指向以NULL结尾的64位双字节字符数组指针。CString与LPSTR转换。
+
+参考[cstring、string、lpwstr、lpstr、char*之间相互转换](https://blog.csdn.net/xiake001/article/details/79899065)
+
+
+
+##### @cpp FormatMessageA
+
+[FormatMessageA function](https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-formatmessagea)
+
+格式化消息字符串。该功能需要消息定义作为输入。
+
+消息定义可以来自传递给函数的缓冲区。 它可以来自已加载模块中的消息表资源。
+
+或者，调用者可以要求函数在系统的消息表资源中搜索消息定义。
+
+ 该函数根据消息标识符和语言标识符在消息表资源中找到消息定义。
+
+ 该函数将格式化的消息文本复制到输出缓冲区，如果需要，则处理所有嵌入的插入序列。
+
+```C++
+DWORD FormatMessageA(
+  DWORD   dwFlags,
+  LPCVOID lpSource,
+  DWORD   dwMessageId,
+  DWORD   dwLanguageId,
+  LPSTR   lpBuffer,
+  DWORD   nSize,
+  va_list *Arguments
+);
+```
+
+`dwFlags`：格式化选项，以及如何解释`LpSood`参数。`dwflags`的低位字节指定函数如何处理输出缓冲区中的换行符。低阶字节还可以指定格式化输出线的最大宽度。
+
+`lpSource`： 消息定义的位置。此参数的类型取决于dwflags参数中的设置。如果在`dwflags`中未设置这两个标志，则忽略`lpsource`。
+
+`dwMessageId`：所请求消息的消息标识符。 如果`dwFlags`包含**`FORMAT_MESSAGE_FORM_STRING`**，则忽略此参数
+
+`dwLanguageId`：请求消息的语言标识符。如果`dwFlags`包含**`FORMAT_MESSAGE_FORM_STRING`**，则忽略此参数
+
+`lpBuffer`：指向缓冲区的指针，该缓冲区接收以null为终止的字符串，该字符串指定格式化的西信息。如果`dwflags`包含**`FORMAT_MESSAGE_ALLOCATE_BUFFER`**，则函数使用`localalloc`函数分配缓冲区，并将指向缓冲区的指针放在lpbuffer中指定的地址。
+
+该缓冲区不能大于64K字节。
+
+`nSize`：如果未设置**`FORMAT_MESSAGE_ALLOCATE_BUFFER`**标志，则此参数以**`TCHARs`**指定输出缓冲区的大小。 如果设置了**`FORMAT_MESSAGE_ALLOCATE_BUFFER`**，则此参数指定分配给输出缓冲区的最小**`TCHAR`**数。
+
+该输出缓冲区不能大于64K字节。
+
+`Arguments`：值数组，用作格式化消息中的插入值。格式字符串中的％1表示Arguments数组中的第一个值； ％2表示第二个参数； 等等。
+
+每个值的解释取决于与消息定义中的插入关联的格式信息。 默认值是将每个值都视为指向以空字符结尾的字符串的指针。
+
+默认情况下，Arguments参数的类型为va_list *，这是一种语言和实现特定的数据类型，用于描述可变数量的参数。 从函数返回时，va_list参数的状态未定义。 要再次使用va_list，请使用va_end销毁变量参数列表指针，然后使用va_start对其进行初始化。
+
+如果没有类型为va_list *的指针，则指定FORMAT_MESSAGE_ARGUMENT_ARRAY标志并将指针传递给DWORD_PTR值数组； 这些值被输入到格式化为插入值的消息中。 每个插入在数组中必须有一个对应的元素。
+
+**返回值**
+
+如果函数成功，则返回值是存储在输出缓冲区中的TCHAR数量，不包括终止的空字符。
+
+如果函数失败，则返回值为零。 要获取扩展的错误信息，请调用[GetLastError](https://docs.microsoft.com/zh-cn/windows/win32/api/errhandlingapi/nf-errhandlingapi-getlasterror)。
+
+
+
+##### @cpp GetLastError
+
+[GetLastError](https://docs.microsoft.com/zh-cn/windows/win32/api/errhandlingapi/nf-errhandlingapi-getlasterror)
+
+检索调用线程的最后一个错误代码值。最后错误代码是基于每个线程维护的。多个线程不会覆盖彼此的最后错误代码。
+
+
+
+#####  @cpp LocalFree function
+
+[LocalFree function](https://docs.microsoft.com/zh-cn/windows/win32/api/winbase/nf-winbase-localfree?redirectedfrom=MSDN)
+

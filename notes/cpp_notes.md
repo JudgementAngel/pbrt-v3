@@ -1,12 +1,12 @@
 # C++知识点笔记
 
-##### @cpp usage 
+## @cpp usage 
 
 usage()一般是程序里自定义来提示用户怎么使用程序的。是一个自定义函数。
 
 
 
-##### @cpp #include尖括号和双引号的区别
+## @cpp #include尖括号和双引号的区别
 
 采用< >方式，表示让编译器在编译器的预设标准路径下去搜索相应的头文件，如果找不到则报错。
 
@@ -18,7 +18,7 @@ usage()一般是程序里自定义来提示用户怎么使用程序的。是一�
 
 
 
-##### @cpp extern
+## @cpp extern
 
 extern可以置于变量或者函数前，以标示变量或者函数的定义在别的文件中，提示编译器遇到此变量和函数时在其他模块中寻找其定义。此外extern也可用来进行链接指定。
 
@@ -26,7 +26,7 @@ extern可以置于变量或者函数前，以标示变量或者函数的定义�
 
 
 
-##### @cpp NDEBUG
+## @cpp NDEBUG
 
 NDEBUG宏定义可以影响assert的行为，这个默认是没被定义的。当我们宏定义了NDEBUG，就屏蔽掉了assert的功能
 
@@ -34,7 +34,7 @@ NDEBUG宏定义可以影响assert的行为，这个默认是没被定义的。�
 
 
 
-##### @cpp fflush
+## @cpp fflush
 
 此函数包含在stdio.h头文件中，用来强制将缓冲区中的内容写入文件。
 函数原型：int fflush(FILE *stream) ;
@@ -49,7 +49,7 @@ fflush函数被广泛使用在多线程、网络编程的消息处理中
 
 
 
-##### @cpp? unique_ptr
+## @cpp? unique_ptr
 
 unique_ptr <>是c ++ 11提供的智能指针实现之一，用于防止内存泄漏。unique_ptr对象包含一个原始指针，并负责其生命周期。当这个对象被销毁的时候，它的析构函数会删除关联的原始指针。
 unique_ptr有重载的- >和*运算符，所以它可以被用于类似于普通的指针。
@@ -58,7 +58,7 @@ unique_ptr有重载的- >和*运算符，所以它可以被用于类似于普通
 
 
 
-##### @cpp `_MAX_***`
+## @cpp `_MAX_***`
 
 ```c++
 #define _MAX_PATH   260
@@ -81,7 +81,7 @@ unique_ptr有重载的- >和*运算符，所以它可以被用于类似于普通
 
 
 
-##### @cpp _splitpath_s
+## @cpp _splitpath_s
 
 官方文档： [\_splitpath\_s、\_wsplitpath\_s](https://docs.microsoft.com/zh-cn/cpp/c-runtime-library/reference/splitpath-s-wsplitpath-s?view=vs-2019)
 
@@ -116,7 +116,7 @@ void _splitpath( const char *path, char *drive, char *dir, char *fname, char *ex
 
 
 
-##### @cpp errno
+## @cpp errno
 
 [errno、_doserrno、\_sys\_errlist 和\_sys\_nerr](https://docs.microsoft.com/zh-cn/cpp/c-runtime-library/errno-doserrno-sys-errlist-and-sys-nerr?view=vs-2019)
 
@@ -128,7 +128,7 @@ errno 值是在出现各种错误条件时分配给 [errno](https://docs.microso
 
 
 
-##### @cpp _makepath_s
+## @cpp _makepath_s
 
 [\_makepath\_s、\_wmakepath\_s](https://docs.microsoft.com/zh-cn/cpp/c-runtime-library/reference/makepath-s-wmakepath-s?view=vs-2019)
 
@@ -136,7 +136,7 @@ errno 值是在出现各种错误条件时分配给 [errno](https://docs.microso
 
 
 
-##### @cpp 左值和右值
+## @cpp 左值和右值
 
 参考 ：[理解C和C++中的左值和右值](https://blog.csdn.net/xuwqiang1994/article/details/79924310)
 
@@ -146,7 +146,7 @@ errno 值是在出现各种错误条件时分配给 [errno](https://docs.microso
 
 
 
-##### @cpp EOF
+## @cpp EOF
 
 EOF是一个计算机术语，为End Of File的缩写，在操作系统中表示资料源无更多的资料可读取。资料源通常称为档案或串流。通常在文本的最后存在此字符表示资料结束。
 
@@ -154,17 +154,17 @@ EOF是一个计算机术语，为End Of File的缩写，在操作系统中表示
 
 
 
-##### @cpp push_back
+## @cpp push_back
 
 string::push_back 表示在字符串末尾再添加 单个字符
 
 
 
-##### @cpp? C++11 引用折叠
+## @cpp? C++11 引用折叠
 
 
 
-##### @cpp? std::move()
+## @cpp? std::move()
 
 [C++11 std::move和std::forward](https://www.jianshu.com/p/b90d1091a4ff)
 
@@ -315,7 +315,7 @@ int main()
 
 
 
-##### @cpp? C++11 lambda
+## @cpp? C++11 lambda
 
 C++ 11 中的 Lambda 表达式用于定义并创建匿名的函数对象，以简化编程工作。
 Lambda 的语法形式如下：
@@ -328,7 +328,7 @@ Lambda 的语法形式如下：
 
 
 
-##### @cpp LPSTR
+## @cpp LPSTR
 
 Long Pointer String 
 
@@ -338,7 +338,7 @@ LPSTR和LPWSTR是 Win32 和 VC++ 所使用的一种字符串数据类型。LPSTR
 
 
 
-##### @cpp FormatMessageA
+## @cpp FormatMessageA
 
 [FormatMessageA function](https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-formatmessagea)
 
@@ -396,7 +396,7 @@ DWORD FormatMessageA(
 
 
 
-##### @cpp GetLastError
+## @cpp GetLastError
 
 [GetLastError](https://docs.microsoft.com/zh-cn/windows/win32/api/errhandlingapi/nf-errhandlingapi-getlasterror)
 
@@ -404,7 +404,72 @@ DWORD FormatMessageA(
 
 
 
-#####  @cpp LocalFree function
+##  @cpp LocalFree function
 
 [LocalFree function](https://docs.microsoft.com/zh-cn/windows/win32/api/winbase/nf-winbase-localfree?redirectedfrom=MSDN)
+
+释放指定的本地内存对象并使其句柄无效。
+
+注意local functions 比其他内存管理功能具有更大的开销并提供更少的功能。 除非文档指出应使用local function，否则新应用程序应使用堆函数[heap functions](https://docs.microsoft.com/windows/desktop/Memory/heap-functions) 。 有关更多信息，请参见全局和局部函数 [Global and Local Functions](https://docs.microsoft.com/windows/desktop/Memory/global-and-local-functions)。
+
+
+
+##### @cpp string::c_str()
+
+`c_str()` 返回一个指向正规C字符串的指针常量，该指针保证指向一个 `size() + 1` 长度的空间，而且最后一个字符肯定是 `\0` ；
+
+而 `data()` 返回的指针则保证指向一个`size()`长度的空间，不保证有没有null-terminate，可能有，可能没有，看库的实现了。
+
+
+
+## @cpp CreateFileA
+
+[CreateFileA function](https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilea)
+
+创建或打开 一个文件或I/O设备。
+
+ 最常用的I / O设备如下：文件，文件流，目录，物理磁盘，卷，控制台缓冲区，磁带驱动器，通信资源，邮筒和管道。 
+
+该函数返回一个句柄，根据文件或设备以及指定的标志和属性，该句柄可用于访问各种类型的I / O的文件或设备。
+
+要将此操作作为事务处理操作执行，从而产生可用于事务处理I / O的句柄，请使用CreateFileTransacted函数。
+
+
+
+## @cpp LARGE_INTEGER
+
+[LARGE_INTEGER union](https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-large_integer~r1)
+
+表示64位有符号整数值。
+
+注意您的C编译器可能本地支持64位整数。 例如，Microsoft Visual C ++支持__int64大小的整数类型。 有关更多信息，请参见C编译器随附的文档。
+
+
+
+## @cpp GetFileSizeEx
+
+[GetFileSizeEx function](https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfilesizeex)
+
+检索指定文件的大小
+
+```C++
+BOOL GetFileSizeEx(
+  HANDLE         hFile,
+  PLARGE_INTEGER lpFileSize
+);
+```
+
+`hFile` ：文件的句柄。 必须已使用**`FILE_READ_ATTRIBUTES`**访问权限或等效访问权限创建了该句柄，否则调用方必须对包含该文件的目录具有足够的权限。
+
+`lpFileSize`：指向[LARGE_INTEGER](https://docs.microsoft.com/windows/win32/api/winnt/ns-winnt-large_integer~r1)结构的指针，该结构接收文件大小（以字节为单位）。
+
+
+
+如果函数成功，则返回值为非零。
+
+如果函数失败，则返回值为零。要获取扩展错误信息，请调用GetLasterror。
+
+
+
+## @cpp size_t
 

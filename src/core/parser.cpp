@@ -151,19 +151,19 @@ std::unique_ptr<Tokenizer> Tokenizer::CreateFromFile(
         errorCallback(
             StringPrintf("%s: %s", filename.c_str(), messageBuffer).c_str());
 
-        LocalFree(messageBuffer); // @cpp LocalFree function
-        return nullptr; // @$
+        LocalFree(messageBuffer); // 输出完之后释放消息缓冲区占用的内存 // @cpp LocalFree function
+        return nullptr;
     };
 
     HANDLE fileHandle =
         CreateFileA(filename.c_str(), GENERIC_READ, FILE_SHARE_READ, 0,
-                    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+                    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0); // 打开输入的文件 // @cpp CreateFileA
     if (!fileHandle) {
-        return errorReportLambda();
+        return errorReportLambda(); // 打开失败，则报错
     }
 
-    LARGE_INTEGER liLen;
-    if (!GetFileSizeEx(fileHandle, &liLen)) {
+    LARGE_INTEGER liLen; // @cpp LARGE_INTEGER
+    if (!GetFileSizeEx(fileHandle, &liLen)) { // @cpp GetFileSizeEx
         return errorReportLambda();
     }
     size_t len = liLen.QuadPart;

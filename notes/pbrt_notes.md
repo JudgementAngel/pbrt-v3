@@ -1,6 +1,6 @@
 # PBRT 笔记
 
-##### @! GoogleLogging
+## @! GoogleLogging
 
 此文件包含 #include 日志相关内容 的信息。
 
@@ -39,19 +39,19 @@ http://blog.csdn.net/lijingpengchina/article/details/9050539)
 
 
 
-##### @! 32-bits
+## @! 32-bits
 
 构建的 32-bits 的pbrt 程序，在渲染高复杂度的场景时可能会Crash
 
 
 
-##### @! options 
+## @! options 
 
 用-help的命令参数运行pbrt.exe，可以看到所有pbrt程序可指定的参数
 
 
 
-##### @? Tokenizer
+## @? Tokenizer
 
 
 

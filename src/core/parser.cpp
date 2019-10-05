@@ -166,22 +166,23 @@ std::unique_ptr<Tokenizer> Tokenizer::CreateFromFile(
     if (!GetFileSizeEx(fileHandle, &liLen)) { // @cpp GetFileSizeEx
         return errorReportLambda();
     }
-    size_t len = liLen.QuadPart;
+    size_t len = liLen.QuadPart; // 获取文件长度 // @cpp size_t 
 
-    HANDLE mapping = CreateFileMapping(fileHandle, 0, PAGE_READONLY, 0, 0, 0);
+    HANDLE mapping = CreateFileMapping(fileHandle, 0, PAGE_READONLY, 0, 0, 0); // 为只读文件创建映射 // @cpp CreateFileMapping
     CloseHandle(fileHandle);
     if (mapping == 0) {
         return errorReportLambda();
     }
-
-    LPVOID ptr = MapViewOfFile(mapping, FILE_MAP_READ, 0, 0, 0);
+	
+	// @cpp MapViewOfFile
+    LPVOID ptr = MapViewOfFile(mapping, FILE_MAP_READ, 0, 0, 0); // 将文件映射的视图映射到调用进程的地址空间
     CloseHandle(mapping);
     if (ptr == nullptr) {
         return errorReportLambda();
     }
 
     return std::unique_ptr<Tokenizer>(
-        new Tokenizer(ptr, len, filename, std::move(errorCallback)));
+        new Tokenizer(ptr, len, filename, std::move(errorCallback))); // 创建Tokenizer对象
 #else
     FILE *f = fopen(filename.c_str(), "r");
     if (!f) {
@@ -788,8 +789,9 @@ ParamSet parseParams(Next nextToken, Unget ungetToken, MemoryArena &arena,
 extern int catIndentCount;
 
 // Parsing Global Interface
+// 解析全局接口
 static void parse(std::unique_ptr<Tokenizer> t) {
-    std::vector<std::unique_ptr<Tokenizer>> fileStack;
+    std::vector<std::unique_ptr<Tokenizer>> fileStack; // @cpp vector // @$
     fileStack.push_back(std::move(t));
     parserLoc = &fileStack.back()->loc;
 
@@ -1102,9 +1104,9 @@ void pbrtParseFile(std::string filename) {
 
     auto tokError = [](const char *msg) { Error("%s", msg); exit(1); }; // @cpp? Lambda
     std::unique_ptr<Tokenizer> t =
-        Tokenizer::CreateFromFile(filename, tokError); 
+        Tokenizer::CreateFromFile(filename, tokError);  // 创建Tokenizer
     if (!t) return;
-    parse(std::move(t));
+    parse(std::move(t)); // @$
 }
 
 void pbrtParseString(std::string str) {

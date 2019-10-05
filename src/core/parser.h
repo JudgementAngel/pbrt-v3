@@ -151,6 +151,8 @@ class Tokenizer {
     // Scene files on disk are mapped into memory for lexing.  We need to
     // hold on to the starting pointer and total length so they can be
     // unmapped in the destructor.
+	// 磁盘上的场景文件被映射到内存中以进行 lexing 。 
+	// 我们需要保留起始指针和总长度，以便可以在析构函数中将它们取消映射。
     void *unmapPtr = nullptr;
     size_t unmapLength = 0;
 #endif

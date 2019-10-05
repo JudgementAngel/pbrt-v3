@@ -444,6 +444,10 @@ DWORD FormatMessageA(
 
 注意您的C编译器可能本地支持64位整数。 例如，Microsoft Visual C ++支持__int64大小的整数类型。 有关更多信息，请参见C编译器随附的文档。
 
+**LARGE_INTEGER**结构实际上是一个联合。 如果您的编译器具有对64位整数的内置支持，请使用**QuadPart**成员存储64位整数。 否则，请使用**LowPart**和**HighPart**成员存储64位整数。
+
+
+
 
 
 ## @cpp GetFileSizeEx
@@ -472,4 +476,34 @@ BOOL GetFileSizeEx(
 
 
 ## @cpp size_t
+
+size_t是标准C库中定义的，应为unsigned int，在64位系统中为 long unsigned int。
+
+使用size_t可能会提高代码的可移植性、有效性或者可读性，或许同时提高这三者。
+
+[size_t](https://blog.csdn.net/fanhaifeng66/article/details/52168157)
+
+
+
+## @cpp CreateFileMapping
+
+[Creating a File Mapping Object](https://docs.microsoft.com/en-us/windows/win32/memory/creating-a-file-mapping-object)
+
+[CreateFileMappingA function](https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createfilemappinga)
+
+为指定文件 创建或打开 命名或未命名文件映射对象。
+
+
+
+## @cpp MapViewOfFile
+
+[MapViewOfFile function](https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile)
+
+将文件映射的视图映射到调用进程的地址空间
+
+如果函数成功，则返回值是映射视图的起始地址。
+
+如果函数失败，则返回值为**NULL**。要获取扩展的错误信息，请调用[GetLastError](https://docs.microsoft.com/windows/desktop/api/errhandlingapi/nf-errhandlingapi-getlasterror)。
+
+
 

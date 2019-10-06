@@ -317,6 +317,10 @@ int main()
 
 ## @cpp? C++11 lambda
 
+[Lambda expressions](https://en.cppreference.com/w/cpp/language/lambda)
+
+[Under the hood of lambdas and std::function](https://shaharmike.com/cpp/lambdas-and-functions/)
+
 C++ 11 中的 Lambda 表达式用于定义并创建匿名的函数对象，以简化编程工作。
 Lambda 的语法形式如下：
 
@@ -325,6 +329,8 @@ Lambda 的语法形式如下：
 ```
 
 可以看到，Lambda 主要分为五个部分：[函数对象参数]、(操作符重载函数参数)、mutable 或 exception 声明、-> 返回值类型、{函数体}.
+
+`[&](){i=0;j=0;}`是一个lambda，它捕获`i`和`j`作为参考。`[&]`表示“通过引用捕获函数中正在使用的所有变量”
 
 
 
@@ -529,5 +535,19 @@ vector是表示可以改变大小的数组的序列容器。就像数组一样�
 
 
 
-## @cpp std::function
+## @cpp? std::function
+
+[std::function](http://www.cplusplus.com/reference/functional/function/)
+
+[std::function](https://en.cppreference.com/w/cpp/utility/functional/function?)
+
+在C++11中，callable object 包括传统C函数，C++成员函数，函数对象（实现了（）运算符的类的实例），lambda表达式（特殊函数对象）共4种。程序设计，特别是程序库设计时，经常需要涉及到回调，如果针对每种不同的callable object单独进行声明类型，代码将会非常散乱，也不灵活。
+
+将其当做`std::string`、`std::vector<>` 、这样的类型就可以了。只不过其值为函数指针，但比函数指针更灵活。因为`std::function`  是一种模板，所以要传入类型，就如`std::vector<int>`  传入类型`int`一样，不过,`std::function`传入的是函数类型  返回值 （参数类型） 如：`std::function<void (int)>`
+
+
+
+
+
+
 

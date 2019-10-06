@@ -396,6 +396,8 @@ struct ParamListItem {
     bool isString = false;
 };
 
+// PBRT_CONSTEXPR 的定义在：配置属性 > C/C++ > 预处理器 > 预处理器定义 中
+
 PBRT_CONSTEXPR int TokenOptional = 0;
 PBRT_CONSTEXPR int TokenRequired = 1;
 
@@ -803,8 +805,8 @@ static void parse(std::unique_ptr<Tokenizer> t) {
     // at which point it switches to the next file (if any).
 	// nextToken是一个辅助函数，用于处理文件堆栈，
 	// 从当前文件返回下一个token，直到到达EOF，然后切换到下一个文件（如果有）。
-    std::function<string_view(int)> nextToken; // @cpp std::function
-    nextToken = [&](int flags) -> string_view {
+    std::function<string_view(int)> nextToken; // @cpp? std::function
+    nextToken = [&](int flags) -> string_view { // @cpp? C++11 lambda
         if (ungetTokenSet) {
             ungetTokenSet = false;
             return string_view(ungetTokenValue.data(), ungetTokenValue.size());

@@ -59,7 +59,7 @@
 
 namespace pbrt {
 
-Loc *parserLoc;
+Loc *parserLoc; // 解析的位置
 
 static std::string toString(string_view s) {
     return std::string(s.data(), s.size());
@@ -791,7 +791,7 @@ extern int catIndentCount;
 // Parsing Global Interface
 // 解析全局接口
 static void parse(std::unique_ptr<Tokenizer> t) {
-    std::vector<std::unique_ptr<Tokenizer>> fileStack; // @cpp vector // @$
+    std::vector<std::unique_ptr<Tokenizer>> fileStack; // @cpp vector
     fileStack.push_back(std::move(t));
     parserLoc = &fileStack.back()->loc;
 
@@ -801,7 +801,9 @@ static void parse(std::unique_ptr<Tokenizer> t) {
     // nextToken is a little helper function that handles the file stack,
     // returning the next token from the current file until reaching EOF,
     // at which point it switches to the next file (if any).
-    std::function<string_view(int)> nextToken;
+	// nextToken是一个辅助函数，用于处理文件堆栈，
+	// 从当前文件返回下一个token，直到到达EOF，然后切换到下一个文件（如果有）。
+    std::function<string_view(int)> nextToken; // @cpp std::function
     nextToken = [&](int flags) -> string_view {
         if (ungetTokenSet) {
             ungetTokenSet = false;

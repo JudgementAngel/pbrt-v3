@@ -414,7 +414,7 @@ DWORD FormatMessageA(
 
 
 
-##### @cpp string::c_str()
+## @cpp string::c_str()
 
 `c_str()` 返回一个指向正规C字符串的指针常量，该指针保证指向一个 `size() + 1` 长度的空间，而且最后一个字符肯定是 `\0` ；
 
@@ -506,4 +506,28 @@ size_t是标准C库中定义的，应为unsigned int，在64位系统中为 long
 如果函数失败，则返回值为**NULL**。要获取扩展的错误信息，请调用[GetLastError](https://docs.microsoft.com/windows/desktop/api/errhandlingapi/nf-errhandlingapi-getlasterror)。
 
 
+
+## @cpp vector
+
+[std::vector简介及其使用](https://www.cnblogs.com/leaves1024/p/10245688.html)
+
+[std::vector](http://www.cplusplus.com/reference/vector/vector/)
+
+```c++
+template <class T，class Alloc = allocator <T> > class vector; //通用模板
+```
+
+C++11标准中的`std::vector`
+
+vector是表示可以改变大小的数组的序列容器。就像数组一样，vector使用连续存储空间存储元素，这意味着它们的元素也可以使用指向其元素的指针进行偏移来访问，并与数组一样高效。但与数组不同的是， vector的大小可以动态变化，并且是由容器自动处理的。
+
+在内部实现上，vector使用动态分配的数组来存储它们的元素。在插入新元素时，vector的大小增大，可能需要重新分配数组，这意味着可能要分配新数组并将原有数组中所有元素移动到这个新数组中。重新分配数组的时间成本相对高昂，因此，vector不会在每次向容器添加元素时都重新分配数组。vector容器可能会分配一些额外的存储空间来适应可能的增长，因此容器的实际容量可能比其包含的元素个数要大。不同库可以实现不同的增长策略以在使用现有内存和 重新分配内容之间取得平衡，但无论如何，重新分配内存时的数组大小应以对数增长，这样在vector末端插入单个元素时就可以得到平摊的常数时间复杂度。
+
+　　因此，与数组相比，vector消耗更多内存，以换取以更有效的方式管理存储空间。
+
+　　与其他动态序列容器（deques，lists和forward_lists）相比，vector可以非常高效地访问其元素（就像数组一样）并且相对高效地从其末尾添加或删除元素。 对于涉及在末尾以外的位置插入或删除元素的操作，性能比其他序列容器要差，并且与lists和forward_lists相比具有更少的迭代器和引用一致性。
+
+
+
+## @cpp std::function
 

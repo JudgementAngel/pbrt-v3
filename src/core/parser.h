@@ -64,6 +64,8 @@ extern Loc *parserLoc;
 // Reimplement enough of absl/std::string_view as needed for the below
 // (Bringing on the abseil dependency at this point just for this seems
 // excessive.)
+// 如下所示，根据需要重新实现足够的 absl/std::string_view
+// （在这一点上引入abseil依赖关系似乎太过分了）
 class string_view {
   public:
     string_view(const char *start, size_t size) : ptr(start), length(size) {}
@@ -115,6 +117,8 @@ class Tokenizer {
 
     // Returns an empty string_view at EOF. Note that the returned
     // string_view is not guaranteed to be valid after next call to Next().
+	// 在EOF返回一个空的string_view
+	// 请注意，在下一次调用Next()之后，不能保证返回的string_view是有效的。
     string_view Next();
 
     Loc loc;

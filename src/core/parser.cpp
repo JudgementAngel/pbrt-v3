@@ -816,7 +816,7 @@ static void parse(std::unique_ptr<Tokenizer> t) {
             if (flags & TokenRequired) {
                 Error("premature EOF");
                 exit(1);
-            }
+            }// @$
             parserLoc = nullptr;
             return {};
         }

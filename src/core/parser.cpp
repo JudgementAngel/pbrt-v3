@@ -793,7 +793,7 @@ extern int catIndentCount;
 // Parsing Global Interface
 // 解析全局接口
 static void parse(std::unique_ptr<Tokenizer> t) {
-    std::vector<std::unique_ptr<Tokenizer>> fileStack; // @cpp vector
+    std::vector<std::unique_ptr<Tokenizer>> fileStack; // 文件堆栈 // @cpp vector
     fileStack.push_back(std::move(t));
     parserLoc = &fileStack.back()->loc;
 
@@ -816,7 +816,7 @@ static void parse(std::unique_ptr<Tokenizer> t) {
             if (flags & TokenRequired) {
                 Error("premature EOF");
                 exit(1);
-            }// @$
+            }
             parserLoc = nullptr;
             return {};
         }

@@ -130,6 +130,7 @@ class Tokenizer {
               std::function<void(const char *)> errorCallback);
 #endif
 
+	// 逐字符解析文件，返回字符的ASCII码
     int getChar() {
         if (pos == end) return EOF;
         int ch = *pos++;

@@ -257,7 +257,7 @@ Tokenizer::~Tokenizer() {
 
 string_view Tokenizer::Next() {
     while (true) {
-        const char *tokenStart = pos;
+        const char *tokenStart = pos; // 开始位置
         int ch = getChar();
         if (ch == EOF)
             return {};
@@ -265,6 +265,7 @@ string_view Tokenizer::Next() {
             // nothing
         } else if (ch == '"') {
             // scan to closing quote
+			// 扫描到结束的标志
             bool haveEscaped = false;
             while ((ch = getChar()) != '"') {
                 if (ch == EOF) {
@@ -274,7 +275,7 @@ string_view Tokenizer::Next() {
                     errorCallback("unterminated string");
                     return {};
                 } else if (ch == '\\') {
-                    haveEscaped = true;
+                    haveEscaped = true; // @$
                     // Grab the next character
                     if ((ch = getChar()) == EOF) {
                         errorCallback("premature EOF");

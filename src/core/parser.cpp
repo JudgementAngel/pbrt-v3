@@ -277,6 +277,7 @@ string_view Tokenizer::Next() {
                 } else if (ch == '\\') {
                     haveEscaped = true; // @$
                     // Grab the next character
+					// 抓取下一个字符
                     if ((ch = getChar()) == EOF) {
                         errorCallback("premature EOF");
                         return {};
@@ -285,7 +286,7 @@ string_view Tokenizer::Next() {
             }
 
             if (!haveEscaped)
-                return {tokenStart, size_t(pos - tokenStart)};
+                return {tokenStart, size_t(pos - tokenStart)}; // @cpp size_t
             else {
                 sEscaped.clear();
                 for (const char *p = tokenStart; p < pos; ++p) {
@@ -1111,7 +1112,7 @@ void pbrtParseFile(std::string filename) {
     std::unique_ptr<Tokenizer> t =
         Tokenizer::CreateFromFile(filename, tokError);  // 创建Tokenizer
     if (!t) return;
-    parse(std::move(t)); // @$
+    parse(std::move(t)); // 解析文件
 }
 
 void pbrtParseString(std::string str) {

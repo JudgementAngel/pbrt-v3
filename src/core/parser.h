@@ -146,6 +146,7 @@ class Tokenizer {
         if (*pos == '\n')
             // Don't worry about the column; we'll be going to the start of
             // the next line again shortly...
+			// 不用担心行，我们很快将再次进入下一行的开头...
             --loc.line;
     }
 
@@ -178,6 +179,10 @@ class Tokenizer {
     // escaped characters and return a string_view to sEscaped.  (And
     // thence, string_views from previous calls to Next() must be invalid
     // after a subsequent call, since we may reuse sEscaped.)
+	// 如果字符串包含转义字符，我们不能仅仅将string_view返回到映射文件中。
+	// 在这种情况下，我们处理转义的字符，并将string_view返回给sEscaped。
+	// （因此，从前一次调用Next()以来的string_views再后续调用之后必须无效，
+	// 因为我们可能会重用sEscaped。）
     std::string sEscaped;
 };
 

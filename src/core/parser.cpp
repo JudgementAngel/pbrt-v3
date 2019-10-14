@@ -315,6 +315,7 @@ string_view Tokenizer::Next() {
         } else {
             // Regular statement or numeric token; scan until we hit a
             // space, opening quote, or bracket.
+			// 正则声明或数字标记；扫描直到找到 空格，左引号 或 方括号
             while ((ch = getChar()) != EOF) {
                 if (ch == ' ' || ch == '\n' || ch == '\t' || ch == '\r' ||
                     ch == '"' || ch == '[' || ch == ']') {

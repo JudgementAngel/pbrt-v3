@@ -294,7 +294,7 @@ string_view Tokenizer::Next() {
                         sEscaped.push_back(*p);
                     else {
                         ++p;
-                        CHECK_LT(p, pos);
+                        CHECK_LT(p, pos); // 检查pos是否小于p，小于则报错 // @cpp G1og Check宏
                         sEscaped.push_back(decodeEscaped(*p));
                     }
                 }
@@ -304,6 +304,7 @@ string_view Tokenizer::Next() {
             return {tokenStart, size_t(1)};
         } else if (ch == '#') {
             // comment: scan to EOL (or EOF)
+			// 注释：扫描到 EOL（或 EOF）EOL: End of line
             while ((ch = getChar()) != EOF) {
                 if (ch == '\n' || ch == '\r') {
                     ungetChar();
@@ -825,9 +826,10 @@ static void parse(std::unique_ptr<Tokenizer> t) {
         }
 
         string_view tok = fileStack.back()->Next();
-
+		// @$
         if (tok.empty()) {
             // We've reached EOF in the current file. Anything more to parse?
+			// 我们已经在当前文件中达到了EOF。 还有什么要解析的吗？
             fileStack.pop_back();
             if (!fileStack.empty()) parserLoc = &fileStack.back()->loc;
             return nextToken(flags);

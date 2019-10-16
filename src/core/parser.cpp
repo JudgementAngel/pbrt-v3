@@ -255,6 +255,7 @@ Tokenizer::~Tokenizer() {
 #endif
 }
 
+// 解析文件中下一个可用的token
 string_view Tokenizer::Next() {
     while (true) {
         const char *tokenStart = pos; // 开始位置
@@ -275,7 +276,7 @@ string_view Tokenizer::Next() {
                     errorCallback("unterminated string");
                     return {};
                 } else if (ch == '\\') {
-                    haveEscaped = true; // @$
+                    haveEscaped = true; 
                     // Grab the next character
 					// 抓取下一个字符
                     if ((ch = getChar()) == EOF) {
@@ -294,7 +295,7 @@ string_view Tokenizer::Next() {
                         sEscaped.push_back(*p);
                     else {
                         ++p;
-                        CHECK_LT(p, pos); // 检查pos是否小于p，小于则报错 // @cpp G1og Check宏
+                        CHECK_LT(p, pos); // 检查pos是否小于p，小于则报错中断程序 // @cpp G1og Check宏
                         sEscaped.push_back(decodeEscaped(*p));
                     }
                 }
@@ -381,6 +382,7 @@ inline bool isQuotedString(string_view str) {
     return str.size() >= 2 && str[0] == '"' && str.back() == '"';
 }
 
+// @$
 static string_view dequoteString(string_view str) {
     if (!isQuotedString(str)) {
         Error("\"%s\": expected quoted string", toString(str).c_str());
@@ -400,7 +402,7 @@ struct ParamListItem {
     bool isString = false;
 };
 
-// PBRT_CONSTEXPR 的定义在：配置属性 > C/C++ > 预处理器 > 预处理器定义 中
+// PBRT_CONSTEXPR 的定义在：配置属性 > C/C++ > 预处理器 > 预处理器定义 中 // @cpp constexpr
 
 PBRT_CONSTEXPR int TokenOptional = 0;
 PBRT_CONSTEXPR int TokenRequired = 1;
@@ -826,34 +828,37 @@ static void parse(std::unique_ptr<Tokenizer> t) {
         }
 
         string_view tok = fileStack.back()->Next();
-		// @$
+		
         if (tok.empty()) {
             // We've reached EOF in the current file. Anything more to parse?
 			// 我们已经在当前文件中达到了EOF。 还有什么要解析的吗？
             fileStack.pop_back();
-            if (!fileStack.empty()) parserLoc = &fileStack.back()->loc;
+            if (!fileStack.empty()) parserLoc = &fileStack.back()->loc; // 解析下一个文件
             return nextToken(flags);
         } else if (tok[0] == '#') {
             // Swallow comments, unless --cat or --toply was given, in
             // which case they're printed to stdout.
+			// 忽视文件中的注释，除非给出--cat或--toply，才将它们打印到stdout
             if (PbrtOptions.cat || PbrtOptions.toPly)
                 printf("%*s%s\n", catIndentCount, "", toString(tok).c_str());
             return nextToken(flags);
         } else
             // Regular token; success.
+			// 普通的 token；成功
             return tok;
     };
 
     auto ungetToken = [&](string_view s) {
-        CHECK(!ungetTokenSet);
+        CHECK(!ungetTokenSet); // ungetTokenSet 为 true 时调用到这里，则中断程序
         ungetTokenValue = std::string(s.data(), s.size());
         ungetTokenSet = true;
     };
 
-    MemoryArena arena;
+    MemoryArena arena; // @? MemoryArena
 
     // Helper function for pbrt API entrypoints that take a single string
     // parameter and a ParamSet (e.g. pbrtShape()).
+	// 带有单个字符串参数 和 ParamSet的pbrt API 入口点的辅助函数。例如：pbrtShape()
     auto basicParamListEntrypoint = [&](
         SpectrumType spectrumType,
         std::function<void(const std::string &n, ParamSet p)> apiFunc) {
@@ -865,6 +870,7 @@ static void parse(std::unique_ptr<Tokenizer> t) {
         apiFunc(n, std::move(params));
     };
 
+	// 不符合pbrt文件格式的语法错误报错函数
     auto syntaxError = [&](string_view tok) {
         Error("Unexpected token: %s", toString(tok).c_str());
         exit(1);

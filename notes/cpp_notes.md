@@ -533,7 +533,81 @@ vector是表示可以改变大小的数组的序列容器。就像数组一样�
 
 　　与其他动态序列容器（deques，lists和forward_lists）相比，vector可以非常高效地访问其元素（就像数组一样）并且相对高效地从其末尾添加或删除元素。 对于涉及在末尾以外的位置插入或删除元素的操作，性能比其他序列容器要差，并且与lists和forward_lists相比具有更少的迭代器和引用一致性。
 
-`back()`访问最后一个元素
+### Member functions
+
+[**(constructor)**](http://www.cplusplus.com/reference/vector/vector/vector/)  Construct vector (public member function ) 
+
+[**(destructor)**](http://www.cplusplus.com/reference/vector/vector/~vector/) Vector destructor (public member function )
+
+[**operator=**](http://www.cplusplus.com/reference/vector/vector/operator=/) Assign content (public member function )
+
+**Iterators**
+
+[**end**](http://www.cplusplus.com/reference/vector/vector/end/) Return iterator to end (public member function )
+
+[**rbegin**](http://www.cplusplus.com/reference/vector/vector/rbegin/) Return reverse iterator to reverse beginning (public member function )
+
+[**rend**](http://www.cplusplus.com/reference/vector/vector/rend/) Return reverse iterator to reverse end (public member function )
+
+[**cbegin** ](http://www.cplusplus.com/reference/vector/vector/cbegin/) Return const_iterator to beginning (public member function )
+
+[**cend** ](http://www.cplusplus.com/reference/vector/vector/cend/) Return const_iterator to end (public member function )
+
+[**crbegin** ](http://www.cplusplus.com/reference/vector/vector/crbegin/) Return const_reverse_iterator to reverse beginning (public member function )
+
+[**crend** ](http://www.cplusplus.com/reference/vector/vector/crend/) Return const_reverse_iterator to reverse end (public member function )
+
+**Capacity**
+
+[**max_size**](http://www.cplusplus.com/reference/vector/vector/max_size/) Return maximum size (public member function )
+
+[**resize**](http://www.cplusplus.com/reference/vector/vector/resize/) Change size (public member function )
+
+[**capacity**](http://www.cplusplus.com/reference/vector/vector/capacity/) Return size of allocated storage capacity (public member function )
+
+[**empty**](http://www.cplusplus.com/reference/vector/vector/empty/) Test whether vector is empty (public member function )
+
+[**reserve**](http://www.cplusplus.com/reference/vector/vector/reserve/) Request a change in capacity (public member function )
+
+[**shrink_to_fit** ](http://www.cplusplus.com/reference/vector/vector/shrink_to_fit/) Shrink to fit (public member function )
+
+**Element access**
+
+[**at**](http://www.cplusplus.com/reference/vector/vector/at/) Access element (public member function )
+
+[**front**](http://www.cplusplus.com/reference/vector/vector/front/) Access first element (public member function )
+
+[**back**](http://www.cplusplus.com/reference/vector/vector/back/) Access last element (public member function )
+
+[**data** ](http://www.cplusplus.com/reference/vector/vector/data/) Access data (public member function )
+
+**Modifiers**
+
+[**push_back**](http://www.cplusplus.com/reference/vector/vector/push_back/) Add element at the end (public member function )
+
+[**pop_back**](http://www.cplusplus.com/reference/vector/vector/pop_back/) Delete last element (public member function )
+
+[**insert**](http://www.cplusplus.com/reference/vector/vector/insert/) Insert elements (public member function )
+
+[**erase**](http://www.cplusplus.com/reference/vector/vector/erase/) Erase elements (public member function )
+
+[**swap**](http://www.cplusplus.com/reference/vector/vector/swap/) Swap content (public member function )
+
+[**clear**](http://www.cplusplus.com/reference/vector/vector/clear/) Clear content (public member function )
+
+[**emplace** ](http://www.cplusplus.com/reference/vector/vector/emplace/) Construct and insert element (public member function )
+
+[**emplace_back** ](http://www.cplusplus.com/reference/vector/vector/emplace_back/) Construct and insert element at the end (public member function )
+
+**Allocator**
+
+[**relational operators**](http://www.cplusplus.com/reference/vector/vector/operators/) Relational operators for vector (function template )
+
+[**swap**](http://www.cplusplus.com/reference/vector/vector/swap-free/) Exchange contents of vectors (function template )
+
+### Template specializations
+
+[**vector**](http://www.cplusplus.com/reference/vector/vector-bool/) Vector of bool (class template specialization )
 
 
 
@@ -637,5 +711,8 @@ this is the fifth line
     
 ```
 
+## @cpp constexpr
 
+**constexpr**是[C++11](https://zh.wikipedia.org/wiki/C%2B%2B11)引入的[关键字](https://zh.wikipedia.org/wiki/關鍵字)，用于[编译时](https://zh.wikipedia.org/wiki/编译时)的常量与常量函数。
 
+声明为constexpr函数的意义是：如果其参数均为合适的编译期常量，则对这个constexpr函数的调用就可用于期望常量表达式的场合（如模板的非类型参数，或枚举常量的值）。如果参数的值在运行期才能确定，或者虽然参数的值是编译期常量，但不匹配这个函数的要求，则对这个函数调用的求值只能在运行期进行。

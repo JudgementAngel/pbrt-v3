@@ -58,7 +58,8 @@ class
 #ifdef PBRT_HAVE_ALIGNAS
 alignas(PBRT_L1_CACHE_LINE_SIZE)
 #endif // PBRT_HAVE_ALIGNAS
-    MemoryArena {
+	// @TODO MemoryArena的具体实现 http://www.pbr-book.org/3ed-2018/Utilities/Memory_Management.html#MemoryArena
+    MemoryArena { 
   public:
     // MemoryArena Public Methods
     MemoryArena(size_t blockSize = 262144) : blockSize(blockSize) {}

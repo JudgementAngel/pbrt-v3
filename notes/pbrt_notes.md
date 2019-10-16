@@ -55,4 +55,8 @@ http://blog.csdn.net/lijingpengchina/article/details/9050539)
 
 
 
+##  @? MemoryArena
 
+pbrt 提供了MemoryArena 类来实现基于区域的分配。它支持从Arena进行大小可变的分配。
+
+该内存分配的优势有：1、分配非常快，通常只需要增加一个指针；2、它可以改善引用的局部性，减少缓存丢失。因为分配的对象在内存中是连续的。更通用的动态内存分配器通常会为它返回的每个块预先准备一个 bookkeeping 结构体，这对引用的局部性有不利影响。

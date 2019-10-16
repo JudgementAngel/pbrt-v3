@@ -892,7 +892,7 @@ void pbrtInit(const Options &opt) {
     InitProfiler();  // 初始化分析器
 }
 
-// @TODO
+// @TODO pbrtCleanup 做了什么事情
 void pbrtCleanup() {
     // API Cleanup
     if (currentApiState == APIState::Uninitialized)

@@ -91,10 +91,13 @@ class string_view {
     }
     bool operator!=(const char *str) const { return !(*this == str); }
 
+	// 移除前面的 n 个字符
     void remove_prefix(int n) {
         ptr += n;
         length -= n;
     }
+
+	// 移除末尾的 n 个字符
     void remove_suffix(int n) { length -= n; }
 
   private:

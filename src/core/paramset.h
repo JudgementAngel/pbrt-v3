@@ -49,6 +49,7 @@
 
 namespace pbrt {
 
+// @TODO ParamSet的具体实现 http://www.pbr-book.org/3ed-2018/Scene_Description_Interface/Parameter_Sets.html
 // ParamSet Declarations
 class ParamSet {
   public:

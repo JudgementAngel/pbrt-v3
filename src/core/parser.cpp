@@ -61,6 +61,7 @@ namespace pbrt {
 
 Loc *parserLoc; // 解析的位置
 
+// 将string_view 转化为 string
 static std::string toString(string_view s) {
     return std::string(s.data(), s.size());
 }
@@ -382,7 +383,7 @@ inline bool isQuotedString(string_view str) {
     return str.size() >= 2 && str[0] == '"' && str.back() == '"';
 }
 
-// @$
+// 取消引用字段的前后'"'
 static string_view dequoteString(string_view str) {
     if (!isQuotedString(str)) {
         Error("\"%s\": expected quoted string", toString(str).c_str());
@@ -727,10 +728,10 @@ ParamSet parseParams(Next nextToken, Unget ungetToken, MemoryArena &arena,
                      SpectrumType spectrumType) {
     ParamSet ps;
     while (true) {
-        string_view decl = nextToken(TokenOptional);
-        if (decl.empty()) return ps;
+        string_view decl = nextToken(TokenOptional); // 获取下一个token
+        if (decl.empty()) return ps; // 空则直接返回
 
-        if (!isQuotedString(decl)) {
+        if (!isQuotedString(decl)) { // 不带引号则直接返回
             ungetToken(decl);
             return ps;
         }
@@ -738,7 +739,7 @@ ParamSet parseParams(Next nextToken, Unget ungetToken, MemoryArena &arena,
         ParamListItem item;
         item.name = toString(dequoteString(decl));
         size_t nAlloc = 0;
-
+		// @$
         auto addVal = [&](string_view val) {
             if (isQuotedString(val)) {
                 if (item.doubleValues) {
@@ -862,11 +863,11 @@ static void parse(std::unique_ptr<Tokenizer> t) {
     auto basicParamListEntrypoint = [&](
         SpectrumType spectrumType,
         std::function<void(const std::string &n, ParamSet p)> apiFunc) {
-        string_view token = nextToken(TokenRequired);
-        string_view dequoted = dequoteString(token);
+        string_view token = nextToken(TokenRequired); // 获取下一个token
+        string_view dequoted = dequoteString(token); // 取消引号
         std::string n = toString(dequoted);
         ParamSet params =
-            parseParams(nextToken, ungetToken, arena, spectrumType);
+            parseParams(nextToken, ungetToken, arena, spectrumType); // @$
         apiFunc(n, std::move(params));
     };
 

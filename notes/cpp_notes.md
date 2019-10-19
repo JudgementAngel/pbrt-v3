@@ -716,3 +716,66 @@ this is the fifth line
 **constexpr**是[C++11](https://zh.wikipedia.org/wiki/C%2B%2B11)引入的[关键字](https://zh.wikipedia.org/wiki/關鍵字)，用于[编译时](https://zh.wikipedia.org/wiki/编译时)的常量与常量函数。
 
 声明为constexpr函数的意义是：如果其参数均为合适的编译期常量，则对这个constexpr函数的调用就可用于期望常量表达式的场合（如模板的非类型参数，或枚举常量的值）。如果参数的值在运行期才能确定，或者虽然参数的值是编译期常量，但不匹配这个函数的要求，则对这个函数调用的求值只能在运行期进行。
+
+
+
+## @cpp `std::<max>`
+
+ 返回给定值中的较大者 
+
+```C++
+template<class T> 
+const T& max(const T& a, const T& b)
+{
+    return (a < b) ? b : a;
+}
+
+template<class T, class Compare> 
+const T& max(const T& a, const T& b, Compare comp)
+{
+    return (comp(a, b)) ? b : a;
+}
+
+template< class T >
+T max( std::initializer_list<T> ilist)
+{
+    return *std::max_element(ilist.begin(), ilist.end());
+}
+
+template< class T, class Compare >
+T max( std::initializer_list<T> ilist, Compare comp )
+{
+    return *std::max_element(ilist.begin(), ilist.end(), comp);
+}
+```
+
+
+
+## @cpp memcpy()
+
+` void *memcpy(void*dest, const void *src, size_t n); `
+
+ 由src指向地址为起始地址的连续n个字节的数据复制到以destin指向地址为起始地址的空间内。 
+
+　　1.source和destin所指内存区域不能重叠，函数返回指向destin的指针。
+
+　　2.与strcpy相比，memcpy并不是遇到'\0'就结束，而是一定会拷贝完n个字节。
+
+
+
+## @cpp strtol
+
+ 将一个字符串转换为长整型long，其函数原型为 :
+
+`long int strtol (const char* str, char** endptr, int base);`
+
+str是要转换的字符
+
+enptr是指向第一个不可转换的字符位置的指针
+
+base的基数，表示转换成为几进制的数
+
+两点注意：
+
+- 当 base 的值为 0 时，默认采用 10 进制转换，但如果遇到 '0x' / '0X' 前置字符则会使用 16 进制转换，遇到 '0' 前置字符则会使用 8 进制转换。
+- 若endptr 不为NULL，则会将遇到的不符合条件而终止的字符指针由 endptr 传回；若 endptr 为 NULL，则表示该参数无效，或不使用该参数。

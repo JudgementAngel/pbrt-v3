@@ -331,8 +331,10 @@ string_view Tokenizer::Next() {
     }
 }
 
+// 从字符串中解析一个double类型的数字
 static double parseNumber(string_view str) {
     // Fast path for a single digit
+	// 一位数的快速方式
     if (str.size() == 1) {
         if (!(str[0] >= '0' && str[0] <= '9')) {
             Error("\"%c\": expected a number", str[0]);
@@ -342,12 +344,14 @@ static double parseNumber(string_view str) {
     }
 
     // Copy to a buffer so we can NUL-terminate it, as strto[idf]() expect.
+	// 复制到缓冲区，这样我们可以按 strto[idf]() 预期对它进行 NUL-terminate
     char buf[64];
     char *bufp = buf;
     std::unique_ptr<char[]> allocBuf;
     if (str.size() + 1 >= sizeof(buf)) {
         // This should be very unusual, but is necessary in case we get a
         // goofball number with lots of leading zeros, for example.
+		// 这应该是非常不寻常的，但是例如在我们得到带有很多前导0的高尔夫球数字时，这是必需的。
         allocBuf.reset(new char[str.size() + 1]);
         bufp = allocBuf.get();
     }
@@ -355,7 +359,7 @@ static double parseNumber(string_view str) {
     std::copy(str.begin(), str.end(), bufp);
     bufp[str.size()] = '\0';
 
-    // Can we just use strtol?
+    // Can we just use strtol? // 是否为整形数字 // @cpp strtol
     auto isInteger = [](string_view str) {
         for (char ch : str)
             if (!(ch >= '0' && ch <= '9')) return false;
@@ -371,7 +375,7 @@ static double parseNumber(string_view str) {
     else
         val = strtod(bufp, &endptr);
 
-    if (val == 0 && endptr == bufp) {
+    if (val == 0 && endptr == bufp) { // 转换失败则报错
         Error("%s: expected a number", toString(str).c_str());
         exit(1);
     }
@@ -396,11 +400,11 @@ static string_view dequoteString(string_view str) {
 }
 
 struct ParamListItem {
-    std::string name;
-    double *doubleValues = nullptr;
-    const char **stringValues = nullptr;
-    size_t size = 0;
-    bool isString = false;
+    std::string name; // 变量名
+    double *doubleValues = nullptr; // 数值变量的值
+    const char **stringValues = nullptr; // 字符变量的值
+    size_t size = 0; // List的大小
+    bool isString = false; // 是否为字符类型变量
 };
 
 // PBRT_CONSTEXPR 的定义在：配置属性 > C/C++ > 预处理器 > 预处理器定义 中 // @cpp constexpr
@@ -425,14 +429,16 @@ enum {
     PARAM_TYPE_TEXTURE
 };
 
+// 查找类型，将变量类型返回存放在 type 中，将变量名字放在 sname 中
 static bool lookupType(const std::string &decl, int *type, std::string &sname) {
     *type = 0;
-    // Skip leading space
+    // Skip leading space // 跳过前导空格
     auto skipSpace = [&decl](std::string::const_iterator iter) {
         while (iter != decl.end() && (*iter == ' ' || *iter == '\t')) ++iter;
         return iter;
     };
     // Skip to the next whitespace character (or the end of the string).
+	// 跳到下一个空格字符（或字符串的末尾）。
     auto skipToSpace = [&decl](std::string::const_iterator iter) {
         while (iter != decl.end() && *iter != ' ' && *iter != '\t') ++iter;
         return iter;
@@ -446,6 +452,7 @@ static bool lookupType(const std::string &decl, int *type, std::string &sname) {
     }
 
     // Find end of type declaration
+	// 查找类型声明的结尾
     auto typeEnd = skipToSpace(typeBegin);
 
     string_view typeStr(&(*typeBegin), size_t(typeEnd - typeBegin));
@@ -563,11 +570,12 @@ static void AddParam(ParamSet &ps, const ParamListItem &item,
         int nItems = item.size;
         if (type == PARAM_TYPE_INT) {
             // parser doesn't handle ints, so convert from doubles here....
+			// 解析器无法处理整数，因此请从此处转换为双精度...
             int nAlloc = nItems;
             std::unique_ptr<int[]> idata(new int[nAlloc]);
             for (int j = 0; j < nAlloc; ++j)
                 idata[j] = int(item.doubleValues[j]);
-            ps.AddInt(name, std::move(idata), nItems);
+            ps.AddInt(name, std::move(idata), nItems); // @$
         } else if (type == PARAM_TYPE_BOOL) {
             // strings -> bools
             int nAlloc = item.size;
@@ -739,24 +747,25 @@ ParamSet parseParams(Next nextToken, Unget ungetToken, MemoryArena &arena,
         ParamListItem item;
         item.name = toString(dequoteString(decl));
         size_t nAlloc = 0;
-		// @$
+		
+		// 把值添加到 item 里
         auto addVal = [&](string_view val) {
             if (isQuotedString(val)) {
-                if (item.doubleValues) {
+                if (item.doubleValues) { // 如果val 带引号，doubleValues 又存了数值，则表示有问题
                     Error("mixed string and numeric parameters");
                     exit(1);
                 }
                 if (item.size == nAlloc) {
-                    nAlloc = std::max<size_t>(2 * item.size, 4);
-                    const char **newData = arena.Alloc<const char *>(nAlloc);
+                    nAlloc = std::max<size_t>(2 * item.size, 4); // @cpp `std::max<T>`
+                    const char **newData = arena.Alloc<const char *>(nAlloc); // 为新数据申请一块内存
                     std::copy(item.stringValues, item.stringValues + item.size,
-                              newData);
+                              newData);  // 将 item.stringValues 到 item.stringValues + item.size 的值拷贝到 newData
                     item.stringValues = newData;
                 }
 
-                val = dequoteString(val);
+                val = dequoteString(val); // 去掉引号
                 char *buf = arena.Alloc<char>(val.size() + 1);
-                memcpy(buf, val.data(), val.size());
+                memcpy(buf, val.data(), val.size()); // @cpp memcpy()
                 buf[val.size()] = '\0';
                 item.stringValues[item.size++] = buf;
             } else {
@@ -849,6 +858,7 @@ static void parse(std::unique_ptr<Tokenizer> t) {
             return tok;
     };
 
+	// 表示当前的Token是未处理的，将ungetToken的值存储在 ungetTokenValue 中
     auto ungetToken = [&](string_view s) {
         CHECK(!ungetTokenSet); // ungetTokenSet 为 true 时调用到这里，则中断程序
         ungetTokenValue = std::string(s.data(), s.size());

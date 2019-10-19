@@ -65,9 +65,10 @@ void ParamSet::AddFloat(const std::string &name,
         new ParamSetItem<Float>(name, std::move(values), nValues));
 }
 
+// 添加一个整型变量
 void ParamSet::AddInt(const std::string &name, std::unique_ptr<int[]> values,
                       int nValues) {
-    EraseInt(name);
+    EraseInt(name); // 如果之前有这个值，先清除
     ADD_PARAM_TYPE(int, ints);
 }
 

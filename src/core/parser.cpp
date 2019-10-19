@@ -542,6 +542,7 @@ static const char *paramTypeToName(int type) {
     }
 }
 
+// 添加参数到参数集中
 static void AddParam(ParamSet &ps, const ParamListItem &item,
                      SpectrumType spectrumType) {
     int type;
@@ -575,7 +576,7 @@ static void AddParam(ParamSet &ps, const ParamListItem &item,
             std::unique_ptr<int[]> idata(new int[nAlloc]);
             for (int j = 0; j < nAlloc; ++j)
                 idata[j] = int(item.doubleValues[j]);
-            ps.AddInt(name, std::move(idata), nItems); // @$
+            ps.AddInt(name, std::move(idata), nItems);
         } else if (type == PARAM_TYPE_BOOL) {
             // strings -> bools
             int nAlloc = item.size;
@@ -731,6 +732,7 @@ static void AddParam(ParamSet &ps, const ParamListItem &item,
         Warning("Type of parameter \"%s\" is unknown", item.name.c_str());
 }
 
+// 解析参数并将参数添加到返回的参数集中
 template <typename Next, typename Unget>
 ParamSet parseParams(Next nextToken, Unget ungetToken, MemoryArena &arena,
                      SpectrumType spectrumType) {
@@ -797,7 +799,7 @@ ParamSet parseParams(Next nextToken, Unget ungetToken, MemoryArena &arena,
             addVal(val);
         }
 
-        AddParam(ps, item, spectrumType);
+        AddParam(ps, item, spectrumType); // 添加参数到参数集中
         arena.Reset();
     }
 
@@ -877,7 +879,7 @@ static void parse(std::unique_ptr<Tokenizer> t) {
         string_view dequoted = dequoteString(token); // 取消引号
         std::string n = toString(dequoted);
         ParamSet params =
-            parseParams(nextToken, ungetToken, arena, spectrumType); // @$
+            parseParams(nextToken, ungetToken, arena, spectrumType); 
         apiFunc(n, std::move(params));
     };
 
@@ -886,7 +888,7 @@ static void parse(std::unique_ptr<Tokenizer> t) {
         Error("Unexpected token: %s", toString(tok).c_str());
         exit(1);
     };
-
+	// @$
     while (true) {
         string_view tok = nextToken(TokenOptional);
         if (tok.empty()) break;

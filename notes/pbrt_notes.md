@@ -49,8 +49,6 @@ http://blog.csdn.net/lijingpengchina/article/details/9050539)
 
 用-help的命令参数运行pbrt.exe，可以看到所有pbrt程序可指定的参数
 
-
-
 ## @? Tokenizer
 
 
@@ -60,3 +58,10 @@ http://blog.csdn.net/lijingpengchina/article/details/9050539)
 pbrt 提供了MemoryArena 类来实现基于区域的分配。它支持从Arena进行大小可变的分配。
 
 该内存分配的优势有：1、分配非常快，通常只需要增加一个指针；2、它可以改善引用的局部性，减少缓存丢失。因为分配的对象在内存中是连续的。更通用的动态内存分配器通常会为它返回的每个块预先准备一个 bookkeeping 结构体，这对引用的局部性有不利影响。
+
+## @? GraphicsState 
+
+http://www.pbr-book.org/3ed-2018/Scene_Description_Interface/Scene_Definition.html#GraphicsState
+
+GraphicsState 的 vector 用作堆栈来执行分层状态管理。调用`pbrtAttributeBegin()`时，将复制当前GraphicsState将其推入次堆栈。然后，`pbrtAttributeEnd()`将从该堆栈弹出状态。
+

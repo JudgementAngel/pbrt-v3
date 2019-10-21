@@ -198,6 +198,7 @@ struct MaterialInstance {
     ParamSet params;
 };
 
+// @? GraphicsState
 struct GraphicsState {
     // Graphics State Methods
     GraphicsState()
@@ -221,6 +222,10 @@ struct GraphicsState {
     // in pbrtAttributeBegin(), we don't immediately make a copy of these
     // maps, but instead record that each one is shared.  Only if an item
     // is added to one is a unique copy actually made.
+	// 本书出版后进行了更新：floatTextures，spectrumTextures和namedMaterials
+	// 均使用“写时复制”方法实现，以实现更高效的GraphicsState管理。 
+	// 当在pbrtAttributeBegin() 中推送状态时，我们不会立即复制这些映射，
+	// 而是记录每个映射都是共享的。 只有将一个项目添加到一个项目中，才能实际制作一个唯一的副本。
     using FloatTextureMap = std::map<std::string, std::shared_ptr<Texture<Float>>>;
     std::shared_ptr<FloatTextureMap> floatTextures;
     bool floatTexturesShared = false;
@@ -402,6 +407,8 @@ std::vector<std::shared_ptr<Shape>> MakeShapes(const std::string &name,
             func);                                       \
         return;                                          \
     } else /* swallow trailing semicolon */
+
+ // 验证当前的API的状态是否为 WorldBlock
 #define VERIFY_WORLD(func)                                   \
     VERIFY_INITIALIZED(func);                                \
     if (!(PbrtOptions.cat || PbrtOptions.toPly) &&           \

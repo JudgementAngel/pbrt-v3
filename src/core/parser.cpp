@@ -823,6 +823,8 @@ static void parse(std::unique_ptr<Tokenizer> t) {
     // at which point it switches to the next file (if any).
 	// nextToken是一个辅助函数，用于处理文件堆栈，
 	// 从当前文件返回下一个token，直到到达EOF，然后切换到下一个文件（如果有）。
+	// flags 参数表示，检查的fileStack为空时，是否报错并退出程序
+	// 用于对下一个数据的预期，不希望它为空时，则传入true，下一个为空不符合预期的文件结尾，则报错
     std::function<string_view(int)> nextToken; // @cpp? std::function
     nextToken = [&](int flags) -> string_view { // @cpp? C++11 lambda
         if (ungetTokenSet) {
@@ -888,7 +890,7 @@ static void parse(std::unique_ptr<Tokenizer> t) {
         Error("Unexpected token: %s", toString(tok).c_str());
         exit(1);
     };
-	// @$
+	// 对文件进行解析
     while (true) {
         string_view tok = nextToken(TokenOptional);
         if (tok.empty()) break;

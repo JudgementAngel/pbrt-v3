@@ -65,3 +65,6 @@ http://www.pbr-book.org/3ed-2018/Scene_Description_Interface/Scene_Definition.ht
 
 GraphicsState 的 vector 用作堆栈来执行分层状态管理。调用`pbrtAttributeBegin()`时，将复制当前GraphicsState将其推入次堆栈。然后，`pbrtAttributeEnd()`将从该堆栈弹出状态。
 
+## @! geometry file
+
+模型文件，也是以ASCII进行存储的，解析和文件的解析相同

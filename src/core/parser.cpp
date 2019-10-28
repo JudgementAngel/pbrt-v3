@@ -808,7 +808,7 @@ ParamSet parseParams(Next nextToken, Unget ungetToken, MemoryArena &arena,
 
 extern int catIndentCount;
 
-// Parsing Global Interface
+// Parsing Global Interface // @$
 // 解析全局接口
 static void parse(std::unique_ptr<Tokenizer> t) {
     std::vector<std::unique_ptr<Tokenizer>> fileStack; // 文件堆栈 // @cpp vector
@@ -954,6 +954,7 @@ static void parse(std::unique_ptr<Tokenizer> t) {
                                          pbrtIntegrator);
             else if (tok == "Include") {
                 // Switch to the given file.
+				// 切换到给定的文件
                 std::string filename =
                     toString(dequoteString(nextToken(TokenRequired)));
                 if (PbrtOptions.cat || PbrtOptions.toPly)
@@ -962,7 +963,7 @@ static void parse(std::unique_ptr<Tokenizer> t) {
                     filename = AbsolutePath(ResolveFilename(filename));
                     auto tokError = [](const char *msg) { Error("%s", msg); };
                     std::unique_ptr<Tokenizer> tinc =
-                        Tokenizer::CreateFromFile(filename, tokError);
+                        Tokenizer::CreateFromFile(filename, tokError); // @! geometry file
                     if (tinc) {
                         fileStack.push_back(std::move(tinc));
                         parserLoc = &fileStack.back()->loc;

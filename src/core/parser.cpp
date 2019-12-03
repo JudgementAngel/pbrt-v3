@@ -383,6 +383,7 @@ static double parseNumber(string_view str) {
     return val;
 }
 
+// 判断一个字符串是否为带引号的数据
 inline bool isQuotedString(string_view str) {
     return str.size() >= 2 && str[0] == '"' && str.back() == '"';
 }
@@ -1005,6 +1006,7 @@ static void parse(std::unique_ptr<Tokenizer> t) {
                 names[0] = toString(n);
 
                 // Check for optional second parameter
+				// 检查可选的第二个参数
                 string_view second = nextToken(TokenOptional);
                 if (!second.empty()) {
                     if (isQuotedString(second))

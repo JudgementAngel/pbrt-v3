@@ -68,3 +68,27 @@ GraphicsState 的 vector 用作堆栈来执行分层状态管理。调用`pbrtAt
 ## @! geometry file
 
 模型文件，也是以ASCII进行存储的，解析和文件的解析相同
+
+
+
+## @! PBRT_CONSTEXPR
+
+PBRT_CONSTEXPR=constexpr 这个设置是写在，pbrt 工程“配置属性 -> C/C++ -> 预处理器->预处理器定义”
+
+```C++
+WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;PBRT_HAVE_MEMORY_H;PBRT_HAVE_HEX_FP_CONSTANTS;PBRT_HAVE_BINARY_CONSTANTS;PBRT_HAVE_CONSTEXPR;PBRT_CONSTEXPR=constexpr;PBRT_HAVE_ALIGNAS;PBRT_HAVE_ALIGNOF;PBRT_HAVE_NONPOD_IN_UNIONS;PBRT_NOINLINE=__declspec(noinline);PBRT_HAVE__ALIGNED_MALLOC;PBRT_THREAD_LOCAL=thread_local;GOOGLE_GLOG_DLL_DECL=;PTEX_STATIC;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)
+```
+
+等价于`#define PBRT_CONSTEXPR constexpr`
+
+
+
+## @? FOR_ACTIVE_TRANSFORMS
+
+这里的作用是什么？没看懂，先跳过吧
+
+
+
+## @! TransformSet
+
+TransformSet 是一个小的实用程序类，它存储一系列转换并提供一些实用程序例程来管理它们

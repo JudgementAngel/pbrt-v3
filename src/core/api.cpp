@@ -124,10 +124,12 @@ namespace pbrt {
 Options PbrtOptions;
 
 // API Local Classes
+// @! PBRT_CONSTEXPR
 PBRT_CONSTEXPR int MaxTransforms = 2;
-PBRT_CONSTEXPR int StartTransformBits = 1 << 0;
-PBRT_CONSTEXPR int EndTransformBits = 1 << 1;
-PBRT_CONSTEXPR int AllTransformsBits = (1 << MaxTransforms) - 1;
+PBRT_CONSTEXPR int StartTransformBits = 1 << 0; // 1
+PBRT_CONSTEXPR int EndTransformBits = 1 << 1; // 10
+PBRT_CONSTEXPR int AllTransformsBits = (1 << MaxTransforms) - 1; // 99
+// @! TransformSet
 struct TransformSet {
     // TransformSet Public Methods
     Transform &operator[](int i) {
@@ -384,6 +386,7 @@ std::vector<std::shared_ptr<Shape>> MakeShapes(const std::string &name,
                                                const ParamSet &paramSet);
 
 // API Macros
+// 验证当前API状态是否初始化
 #define VERIFY_INITIALIZED(func)                           \
     if (!(PbrtOptions.cat || PbrtOptions.toPly) &&           \
         currentApiState == APIState::Uninitialized) {        \
@@ -415,6 +418,7 @@ std::vector<std::shared_ptr<Shape>> MakeShapes(const std::string &name,
             func);                                           \
         return;                                              \
     } else /* swallow trailing semicolon */
+// @? FOR_ACTIVE_TRANSFORMS
 #define FOR_ACTIVE_TRANSFORMS(expr)           \
     for (int i = 0; i < MaxTransforms; ++i)   \
         if (activeTransformBits & (1 << i)) { \

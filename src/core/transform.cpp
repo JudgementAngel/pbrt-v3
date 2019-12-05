@@ -79,6 +79,7 @@ Matrix4x4 Transpose(const Matrix4x4 &m) {
                      m.m[3][3]);
 }
 
+// 返回一个矩阵的逆矩阵
 Matrix4x4 Inverse(const Matrix4x4 &m) {
     int indxc[4], indxr[4];
     int ipiv[4] = {0, 0, 0, 0};
@@ -200,15 +201,18 @@ Transform Rotate(Float theta, const Vector3f &axis) {
     return Transform(m, Transpose(m));
 }
 
+// 根据给定的摄像机位置，朝向以及Up方向，构造一个View Matrix（视矩阵，摄像机矩阵）
 Transform LookAt(const Point3f &pos, const Point3f &look, const Vector3f &up) {
     Matrix4x4 cameraToWorld;
     // Initialize fourth column of viewing matrix
+	// 初始化 View Matrix的第四列
     cameraToWorld.m[0][3] = pos.x;
     cameraToWorld.m[1][3] = pos.y;
     cameraToWorld.m[2][3] = pos.z;
     cameraToWorld.m[3][3] = 1;
 
     // Initialize first three columns of viewing matrix
+	// 初始化 View Matrix 的 1-3 列
     Vector3f dir = Normalize(look - pos);
     if (Cross(Normalize(up), dir).Length() == 0) {
         Error(

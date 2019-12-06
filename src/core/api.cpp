@@ -418,7 +418,7 @@ std::vector<std::shared_ptr<Shape>> MakeShapes(const std::string &name,
             func);                                           \
         return;                                              \
     } else /* swallow trailing semicolon */
-// @? FOR_ACTIVE_TRANSFORMS
+// @? FOR_ACTIVE_TRANSFORMS // 针对每一个激活的变换？
 #define FOR_ACTIVE_TRANSFORMS(expr)           \
     for (int i = 0; i < MaxTransforms; ++i)   \
         if (activeTransformBits & (1 << i)) { \
@@ -956,10 +956,10 @@ void pbrtConcatTransform(Float tr[16]) {
 }
 
 void pbrtRotate(Float angle, Float dx, Float dy, Float dz) {
-    VERIFY_INITIALIZED("Rotate");
+    VERIFY_INITIALIZED("Rotate"); // 验证是否初始化
     FOR_ACTIVE_TRANSFORMS(curTransform[i] =
                               curTransform[i] *
-                              Rotate(angle, Vector3f(dx, dy, dz));)
+                              Rotate(angle, Vector3f(dx, dy, dz));) // 对每一个激活的Transform附加旋转变换
     if (PbrtOptions.cat || PbrtOptions.toPly)
         printf("%*sRotate %.9g %.9g %.9g %.9g\n", catIndentCount, "", angle,
                dx, dy, dz);
@@ -975,9 +975,9 @@ void pbrtScale(Float sx, Float sy, Float sz) {
 
 void pbrtLookAt(Float ex, Float ey, Float ez, Float lx, Float ly, Float lz,
                 Float ux, Float uy, Float uz) {
-    VERIFY_INITIALIZED("LookAt");
+    VERIFY_INITIALIZED("LookAt"); // 验证是否初始化
     Transform lookAt =
-        LookAt(Point3f(ex, ey, ez), Point3f(lx, ly, lz), Vector3f(ux, uy, uz));
+        LookAt(Point3f(ex, ey, ez), Point3f(lx, ly, lz), Vector3f(ux, uy, uz)); // 构造view变换矩阵
     FOR_ACTIVE_TRANSFORMS(curTransform[i] = curTransform[i] * lookAt;);
     if (PbrtOptions.cat || PbrtOptions.toPly)
         printf(

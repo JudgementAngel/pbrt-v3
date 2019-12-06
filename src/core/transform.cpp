@@ -177,6 +177,7 @@ Transform RotateZ(Float theta) {
     return Transform(m, Transpose(m));
 }
 
+// 根据旋转的角度和旋转的轴向构造旋转变化
 Transform Rotate(Float theta, const Vector3f &axis) {
     Vector3f a = Normalize(axis);
     Float sinTheta = std::sin(Radians(theta));

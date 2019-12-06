@@ -92,3 +92,5 @@ WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;PBRT_HAVE_MEMORY_H;PBRT_HAVE_HEX_FP_CONST
 ## @! TransformSet
 
 TransformSet 是一个小的实用程序类，它存储一系列转换并提供一些实用程序例程来管理它们
+
+声明静态变量`static TransformSet curTransform;`的时候，TranformSet 会自动创建 `Transform t[MaxTransforms];`，Transform 里面存储的是 `Matrix4x4 m,mInv;`，Matrix的默认初始值是单位矩阵，即斜对角是1，其他位置为0

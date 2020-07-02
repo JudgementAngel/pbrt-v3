@@ -369,7 +369,7 @@ enum class APIState { Uninitialized, OptionsBlock, WorldBlock };
 static APIState currentApiState = APIState::Uninitialized; // 表示当前API的状态
 static TransformSet curTransform;
 static uint32_t activeTransformBits = AllTransformsBits;
-static std::map<std::string, TransformSet> namedCoordinateSystems;
+static std::map<std::string, TransformSet> namedCoordinateSystems; // @cpp std::map()
 static std::unique_ptr<RenderOptions> renderOptions; // @cpp? unique_ptr
 static GraphicsState graphicsState;
 static std::vector<GraphicsState> pushedGraphicsStates;

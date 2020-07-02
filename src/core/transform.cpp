@@ -199,6 +199,7 @@ Transform Rotate(Float theta, const Vector3f &axis) {
     m.m[2][1] = a.y * a.z * (1 - cosTheta) + a.x * sinTheta;
     m.m[2][2] = a.z * a.z + (1 - a.z * a.z) * cosTheta;
     m.m[2][3] = 0;
+	// 旋转矩阵的逆矩阵等同于转置矩阵
     return Transform(m, Transpose(m));
 }
 
@@ -237,6 +238,7 @@ Transform LookAt(const Point3f &pos, const Point3f &look, const Vector3f &up) {
     cameraToWorld.m[1][2] = dir.y;
     cameraToWorld.m[2][2] = dir.z;
     cameraToWorld.m[3][2] = 0.;
+	// 返回的矩阵是 World to Camera的矩阵
     return Transform(Inverse(cameraToWorld), cameraToWorld);
 }
 

@@ -785,3 +785,22 @@ base的基数，表示转换成为几进制的数
 ## @cpp const
 
 const 是 constant 的缩写，本意是不变的，不易改变的意思。在 C++ 中是用来修饰内置类型变量，自定义对象，成员函数，返回值，函数参数。
+
+
+
+## @cpp std::map()
+
+[std::map](http://www.cplusplus.com/reference/map/map/?kw=map)
+
+[C++中的STL中map用法详解](https://www.cnblogs.com/fnlingnzb-learner/p/5833051.html)
+
+map是关联的容器，存储按特定顺序由键值和映射值的组合形成的元素。
+
+在map中，key values 通常用于对元素进行排序和唯一标识，而mapped values 存储与key关联的内容。 key和mapped values 的类型可能有所不同，并以成员类型value_type分组在一起，成员类型value_type是将两者结合的对类型：
+
+```c++
+typedef pair<const Key, T> value_type;
+```
+
+Map是STL的一个关联容器，它提供一对一（其中第一个可以称为关键字，每个关键字只能在map中出现一次，第二个可能称为该关键字的值）的数据 处理能力，由于这个特性，它完成有可能在我们处理一对一数据的时候，在编程上提供快速通道。这里说下map内部数据的组织，map内部自建一颗红黑树(一 种非严格意义上的平衡二叉树)，这颗树具有对数据自动排序的功能，所以在map内部所有的数据都是有序的，后边我们会见识到有序的好处。
+

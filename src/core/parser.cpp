@@ -937,13 +937,15 @@ static void parse(std::unique_ptr<Tokenizer> t) {
                 string_view n = dequoteString(nextToken(TokenRequired));
                 pbrtCoordSysTransform(toString(n));
             } else if (tok == "Camera")
-                basicParamListEntrypoint(SpectrumType::Reflectance, pbrtCamera);
+				// 解析后面参数并根据给定参数构造摄像机
+                basicParamListEntrypoint(SpectrumType::Reflectance, pbrtCamera); 
             else
                 syntaxError(tok);
             break;
 
         case 'F':
             if (tok == "Film")
+				// 解析后面参数并根据给定参数设定最终输出的图像数据
                 basicParamListEntrypoint(SpectrumType::Reflectance, pbrtFilm);
             else
                 syntaxError(tok);
@@ -985,7 +987,7 @@ static void parse(std::unique_ptr<Tokenizer> t) {
                 for (int i = 0; i < 9; ++i)
                     v[i] = parseNumber(nextToken(TokenRequired));
                 pbrtLookAt(v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7],
-                           v[8]);
+                           v[8]); // 构造 World to Camera的矩阵
             } else
                 syntaxError(tok);
             break;

@@ -1130,6 +1130,7 @@ void pbrtMediumInterface(const std::string &insideName,
                insideName.c_str(), outsideName.c_str());
 }
 
+// 表示开始描述场景
 void pbrtWorldBegin() {
     VERIFY_OPTIONS("WorldBegin");
     currentApiState = APIState::WorldBlock;

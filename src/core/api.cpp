@@ -1141,7 +1141,6 @@ void pbrtWorldBegin() {
         printf("\n\nWorldBegin\n\n");
 }
 
-// @$
 void pbrtAttributeBegin() {
     VERIFY_WORLD("AttributeBegin");
     pushedGraphicsStates.push_back(graphicsState);

@@ -312,10 +312,14 @@ void ParallelInit() {
     // their call to ProfilerWorkerThreadInit() before we return from this
     // function.  In turn, we can be sure that the profiling system isn't
     // started until after all worker threads have done that.
+	// 创建一个Barrier，以确保在这个函数返回之前，
+	// 所有的工作线程都可以通过它们对 ProfilerWorkerThreadInit() 的调用。
+	// 反过来，我们可以确定直到所有线程都完成之后，profiling system 才启动。
     std::shared_ptr<Barrier> barrier = std::make_shared<Barrier>(nThreads);
 
     // Launch one fewer worker thread than the total number we want doing
     // work, since the main thread helps out, too.
+	// 启动的工作线程比我们要执行的总数少，因为主线程也可以提供帮助
     for (int i = 0; i < nThreads - 1; ++i)
         threads.push_back(std::thread(workerThreadFunc, i + 1, barrier));
 

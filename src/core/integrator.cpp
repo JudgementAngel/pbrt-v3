@@ -224,10 +224,12 @@ std::unique_ptr<Distribution1D> ComputeLightPowerDistribution(
         new Distribution1D(&lightPower[0], lightPower.size()));
 }
 
-// SamplerIntegrator Method Definitions
+// @$
+// SamplerIntegrator Method Definitions // SamplerIntegrator 方法定义
 void SamplerIntegrator::Render(const Scene &scene) {
     Preprocess(scene, *sampler);
     // Render image tiles in parallel
+	// 并行渲染图像分块
 
     // Compute number of tiles, _nTiles_, to use for parallel rendering
     Bounds2i sampleBounds = camera->film->GetSampleBounds();

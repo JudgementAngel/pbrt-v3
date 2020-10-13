@@ -899,7 +899,6 @@ void pbrtInit(const Options &opt) {
     InitProfiler();  // 初始化分析器
 }
 
-// @TODO pbrtCleanup 做了什么事情
 void pbrtCleanup() {
     // API Cleanup
     if (currentApiState == APIState::Uninitialized)
@@ -907,7 +906,7 @@ void pbrtCleanup() {
     else if (currentApiState == APIState::WorldBlock)
         Error("pbrtCleanup() called while inside world block.");
     currentApiState = APIState::Uninitialized;
-    ParallelCleanup();
+    ParallelCleanup(); // 清理线程
     CleanupProfiler();
 }
 
@@ -1606,6 +1605,7 @@ void pbrtObjectInstance(const std::string &name) {
 void pbrtWorldEnd() {
     VERIFY_WORLD("WorldEnd");
     // Ensure there are no pushed graphics states
+	// 确保没有pushed未结束的图像状态
     while (pushedGraphicsStates.size()) {
         Warning("Missing end to pbrtAttributeBegin()");
         pushedGraphicsStates.pop_back();
@@ -1617,6 +1617,7 @@ void pbrtWorldEnd() {
     }
 
     // Create scene and render
+	// 创建场景和渲染器
     if (PbrtOptions.cat || PbrtOptions.toPly) {
         printf("%*sWorldEnd\n", catIndentCount, "");
     } else {
@@ -1629,6 +1630,9 @@ void pbrtWorldEnd() {
         // issue is that all the rest of the profiling system assumes
         // hierarchical inheritance of profiling state; this is the only
         // place where that isn't the case.
+		// 这个做法有点丑陋，我们直接覆盖当前的事件探查器状态，
+		// 以从与解析/场景构造相关的内容切换到呈现内容，然后将其切换回下方。
+		// 潜在的问题是，所有其他概要分析系统都假定概要化状态是概要继承。 这是唯一的情况并非如此。
         CHECK_EQ(CurrentProfilerState(), ProfToBits(Prof::SceneConstruction));
         ProfilerState = ProfToBits(Prof::IntegratorRender);
 

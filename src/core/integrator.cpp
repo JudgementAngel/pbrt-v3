@@ -227,11 +227,12 @@ std::unique_ptr<Distribution1D> ComputeLightPowerDistribution(
 // @$
 // SamplerIntegrator Method Definitions // SamplerIntegrator 方法定义
 void SamplerIntegrator::Render(const Scene &scene) {
-    Preprocess(scene, *sampler);
+    Preprocess(scene, *sampler); // 预处理，该函数在子类中实现
     // Render image tiles in parallel
 	// 并行渲染图像分块
 
     // Compute number of tiles, _nTiles_, to use for parallel rendering
+	// 计算用于并行渲染的tile 的数量 _nTiles_
     Bounds2i sampleBounds = camera->film->GetSampleBounds();
     Vector2i sampleExtent = sampleBounds.Diagonal();
     const int tileSize = 16;
@@ -241,15 +242,19 @@ void SamplerIntegrator::Render(const Scene &scene) {
     {
         ParallelFor2D([&](Point2i tile) {
             // Render section of image corresponding to _tile_
+			// 对应到 _tile_ 的图像渲染部分
 
             // Allocate _MemoryArena_ for tile
+			// 为 tile 分配 _MemoryArena_
             MemoryArena arena;
 
             // Get sampler instance for tile
+			// 获取 tile 的采样器实例
             int seed = tile.y * nTiles.x + tile.x;
             std::unique_ptr<Sampler> tileSampler = sampler->Clone(seed);
 
             // Compute sample bounds for tile
+			// 计算 tile 的采样范围
             int x0 = sampleBounds.pMin.x + tile.x * tileSize;
             int x1 = std::min(x0 + tileSize, sampleBounds.pMax.x);
             int y0 = sampleBounds.pMin.y + tile.y * tileSize;
@@ -258,10 +263,12 @@ void SamplerIntegrator::Render(const Scene &scene) {
             LOG(INFO) << "Starting image tile " << tileBounds;
 
             // Get _FilmTile_ for tile
+			// 获取 tile 的 _FilmTile_ ，对应最终图像上的位置
             std::unique_ptr<FilmTile> filmTile =
                 camera->film->GetFilmTile(tileBounds);
 
             // Loop over pixels in tile to render them
+			// 遍历 tile 中的每一个像素来渲染它们
             for (Point2i pixel : tileBounds) {
                 {
                     ProfilePhase pp(Prof::StartPixel);
@@ -272,15 +279,20 @@ void SamplerIntegrator::Render(const Scene &scene) {
                 // the usage of RNG values from (most) Samplers that use
                 // RNGs consistent, which improves reproducability /
                 // debugging.
-                if (!InsideExclusive(pixel, pixelBounds))
+				// 在 StartPixel() 调用之后执行此检查；
+				// 这样可以使（大多数）使用RNG的采样器对RNG值的使用保持一致，
+				// 从而提高了可重现性 / 调试性
+                if (!InsideExclusive(pixel, pixelBounds)) // 检查像素是否在像素渲染范围内
                     continue;
 
                 do {
                     // Initialize _CameraSample_ for current sample
+					// 为当前的采样 初始化 _CameraSample_
                     CameraSample cameraSample =
                         tileSampler->GetCameraSample(pixel);
 
                     // Generate camera ray for current sample
+					// 从当前的采样中生成 摄像机射线
                     RayDifferential ray;
                     Float rayWeight =
                         camera->GenerateRayDifferential(cameraSample, &ray);
@@ -289,10 +301,12 @@ void SamplerIntegrator::Render(const Scene &scene) {
                     ++nCameraRays;
 
                     // Evaluate radiance along camera ray
+					// 评估沿摄像机光线的辐射
                     Spectrum L(0.f);
                     if (rayWeight > 0) L = Li(ray, scene, *tileSampler, arena);
 
                     // Issue warning if unexpected radiance value returned
+					// 如果返回了意外的辐射值，则发出警告
                     if (L.HasNaNs()) {
                         LOG(ERROR) << StringPrintf(
                             "Not-a-number radiance value returned "

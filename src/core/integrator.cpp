@@ -224,7 +224,6 @@ std::unique_ptr<Distribution1D> ComputeLightPowerDistribution(
         new Distribution1D(&lightPower[0], lightPower.size()));
 }
 
-// @$
 // SamplerIntegrator Method Definitions // SamplerIntegrator 方法定义
 void SamplerIntegrator::Render(const Scene &scene) {
     Preprocess(scene, *sampler); // 预处理，该函数在子类中实现
@@ -284,7 +283,7 @@ void SamplerIntegrator::Render(const Scene &scene) {
 				// 从而提高了可重现性 / 调试性
                 if (!InsideExclusive(pixel, pixelBounds)) // 检查像素是否在像素渲染范围内
                     continue;
-
+				// @$
                 do {
                     // Initialize _CameraSample_ for current sample
 					// 为当前的采样 初始化 _CameraSample_
@@ -333,16 +332,19 @@ void SamplerIntegrator::Render(const Scene &scene) {
                         ray << " -> L = " << L;
 
                     // Add camera ray's contribution to image
+					// 增加相机光线对图像的贡献
                     filmTile->AddSample(cameraSample.pFilm, L, rayWeight);
 
                     // Free _MemoryArena_ memory from computing image sample
                     // value
+					// 从计算图像样本值中释放 _MemoryArena_ 内存
                     arena.Reset();
                 } while (tileSampler->StartNextSample());
             }
             LOG(INFO) << "Finished image tile " << tileBounds;
 
             // Merge image tile into _Film_
+			// 合并图块到 _Film_
             camera->film->MergeFilmTile(std::move(filmTile));
             reporter.Update();
         }, nTiles);
@@ -351,6 +353,7 @@ void SamplerIntegrator::Render(const Scene &scene) {
     LOG(INFO) << "Rendering finished";
 
     // Save final image after rendering
+	// 渲染完成之后保存图像
     camera->film->WriteImage();
 }
 

@@ -247,12 +247,14 @@ int MaxThreadIndex() {
 void ParallelFor2D(std::function<void(Point2i)> func, const Point2i &count) {
     CHECK(threads.size() > 0 || MaxThreadIndex() == 1);
 
+	// 单线程渲染
     if (threads.empty() || count.x * count.y <= 1) {
         for (int y = 0; y < count.y; ++y)
             for (int x = 0; x < count.x; ++x) func(Point2i(x, y));
         return;
     }
-
+	// 多线程渲染 @?
+	// @cpp lock_guard
     ParallelForLoop loop(std::move(func), count, CurrentProfilerState());
     {
         std::lock_guard<std::mutex> lock(workListMutex);
@@ -264,19 +266,24 @@ void ParallelFor2D(std::function<void(Point2i)> func, const Point2i &count) {
     workListCondition.notify_all();
 
     // Help out with parallel loop iterations in the current thread
+	// 帮助当前线程中的并行循环迭代
     while (!loop.Finished()) {
         // Run a chunk of loop iterations for _loop_
+		// 为_loop_运行大块循环迭代
 
         // Find the set of loop iterations to run next
+		// 找到下一个要运行的循环迭代集
         int64_t indexStart = loop.nextIndex;
         int64_t indexEnd = std::min(indexStart + loop.chunkSize, loop.maxIndex);
 
         // Update _loop_ to reflect iterations this thread will run
+		// 更新_loop_以反映此线程将运行的迭代
         loop.nextIndex = indexEnd;
         if (loop.nextIndex == loop.maxIndex) workList = loop.next;
         loop.activeWorkers++;
 
         // Run loop indices in _[indexStart, indexEnd)_
+		// 在 _[indexStart, indexEnd)_ 索引 中运行循环
         lock.unlock();
         for (int64_t index = indexStart; index < indexEnd; ++index) {
             uint64_t oldState = ProfilerState;
@@ -285,6 +292,7 @@ void ParallelFor2D(std::function<void(Point2i)> func, const Point2i &count) {
                 loop.func1D(index);
             }
             // Handle other types of loops
+			// 处理其他类型的循环
             else {
                 CHECK(loop.func2D);
                 loop.func2D(Point2i(index % loop.nX, index / loop.nX));
@@ -294,6 +302,7 @@ void ParallelFor2D(std::function<void(Point2i)> func, const Point2i &count) {
         lock.lock();
 
         // Update _loop_ to reflect completion of iterations
+		// 更新 _loop_ 来反映迭代的完成
         loop.activeWorkers--;
     }
 }

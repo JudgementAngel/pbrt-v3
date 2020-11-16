@@ -63,6 +63,7 @@ Float Camera::GenerateRayDifferential(const CameraSample &sample,
     if (wt == 0) return 0;
 
     // Find camera ray after shifting a fraction of a pixel in the $x$ direction
+	// 在x方向上移动一小部分像素后，查找相机射线
     Float wtx;
     for (Float eps : { .05, -.05 }) {
         CameraSample sshift = sample;
@@ -78,6 +79,7 @@ Float Camera::GenerateRayDifferential(const CameraSample &sample,
         return 0;
 
     // Find camera ray after shifting a fraction of a pixel in the $y$ direction
+	// 在y方向上移动一小部分像素后，查找相机射线
     Float wty;
     for (Float eps : { .05, -.05 }) {
         CameraSample sshift = sample;

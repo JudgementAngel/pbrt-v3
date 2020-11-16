@@ -96,29 +96,37 @@ Float PerspectiveCamera::GenerateRayDifferential(const CameraSample &sample,
                                                  RayDifferential *ray) const {
     ProfilePhase prof(Prof::GenerateCameraRay);
     // Compute raster and camera sample positions
+	// 计算栅格和相机采样位置
     Point3f pFilm = Point3f(sample.pFilm.x, sample.pFilm.y, 0);
     Point3f pCamera = RasterToCamera(pFilm);
     Vector3f dir = Normalize(Vector3f(pCamera.x, pCamera.y, pCamera.z));
     *ray = RayDifferential(Point3f(0, 0, 0), dir);
     // Modify ray for depth of field
+	// 修改射线的景深 
     if (lensRadius > 0) {
         // Sample point on lens
+		// 镜头上的采样点
         Point2f pLens = lensRadius * ConcentricSampleDisk(sample.pLens);
 
         // Compute point on plane of focus
+		// 计算焦点平面上的点
         Float ft = focalDistance / ray->d.z;
         Point3f pFocus = (*ray)(ft);
 
         // Update ray for effect of lens
+		// 更新光线以获得镜头效果
         ray->o = Point3f(pLens.x, pLens.y, 0);
         ray->d = Normalize(pFocus - ray->o);
     }
 
     // Compute offset rays for _PerspectiveCamera_ ray differentials
+	// 计算 _PerspectiveCamera_ 射线微分的偏移射线
     if (lensRadius > 0) {
         // Compute _PerspectiveCamera_ ray differentials accounting for lens
+		// 计算镜头的 _PerspectiveCamera_ 射线微分
 
         // Sample point on lens
+		// 镜头上的采样点
         Point2f pLens = lensRadius * ConcentricSampleDisk(sample.pLens);
         Vector3f dx = Normalize(Vector3f(pCamera + dxCamera));
         Float ft = focalDistance / dx.z;

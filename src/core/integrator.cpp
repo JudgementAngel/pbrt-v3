@@ -283,13 +283,13 @@ void SamplerIntegrator::Render(const Scene &scene) {
 				// 从而提高了可重现性 / 调试性
                 if (!InsideExclusive(pixel, pixelBounds)) // 检查像素是否在像素渲染范围内
                     continue;
-				// @$
+				
                 do {
                     // Initialize _CameraSample_ for current sample
 					// 为当前的采样 初始化 _CameraSample_
                     CameraSample cameraSample =
                         tileSampler->GetCameraSample(pixel);
-
+					
                     // Generate camera ray for current sample
 					// 从当前的采样中生成 摄像机射线
                     RayDifferential ray;
@@ -299,6 +299,7 @@ void SamplerIntegrator::Render(const Scene &scene) {
                         1 / std::sqrt((Float)tileSampler->samplesPerPixel));
                     ++nCameraRays;
 
+					// @$
                     // Evaluate radiance along camera ray
 					// 评估沿摄像机光线的辐射
                     Spectrum L(0.f);

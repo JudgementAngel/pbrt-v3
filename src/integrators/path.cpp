@@ -68,7 +68,7 @@ Spectrum PathIntegrator::Li(const RayDifferential &r, const Scene &scene,
     Spectrum L(0.f), beta(1.f);
     RayDifferential ray(r);
     bool specularBounce = false;
-    int bounces;
+    int bounces; // 弹跳计数
     // Added after book publication: etaScale tracks the accumulated effect
     // of radiance scaling due to rays passing through refractive
     // boundaries (see the derivation on p. 527 of the third edition). We
@@ -76,10 +76,14 @@ Spectrum PathIntegrator::Li(const RayDifferential &r, const Scene &scene,
     // Russian roulette; this is worthwhile, since it lets us sometimes
     // avoid terminating refracted rays that are about to be refracted back
     // out of a medium and thus have their beta value increased.
+	// 在本书出版之后添加：etaScale用于跟踪由于光线穿过折射边界而引起的辐射缩放的累积效应（请参见第三版第527页的推导）。
+	// 我们跟踪此值，以便在应用俄罗斯轮盘赌时将其从Beta中删除； 
+	// 这是值得的，因为它使我们有时避免终止将要折射回介质的折射光线，从而使它们的beta值增加。
     Float etaScale = 1;
 
     for (bounces = 0;; ++bounces) {
         // Find next path vertex and accumulate contribution
+		// 找到下一个路径 并 计算贡献
         VLOG(2) << "Path tracer bounce " << bounces << ", current L = " << L
                 << ", beta = " << beta;
 

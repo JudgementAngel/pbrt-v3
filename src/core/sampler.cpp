@@ -55,6 +55,7 @@ void Sampler::StartPixel(const Point2i &p) {
     currentPixel = p;
     currentPixelSampleIndex = 0;
     // Reset array offsets for next pixel sample
+	// 为下一个像素采样重置数组偏移
     array1DOffset = array2DOffset = 0;
 }
 

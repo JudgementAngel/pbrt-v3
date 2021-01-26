@@ -114,6 +114,7 @@ class MediumInteraction : public Interaction {
 };
 
 // SurfaceInteraction Declarations
+// 表面相交点声明
 class SurfaceInteraction : public Interaction {
   public:
     // SurfaceInteraction Public Methods
@@ -153,6 +154,8 @@ class SurfaceInteraction : public Interaction {
     // Added after book publication. Shapes can optionally provide a face
     // index with an intersection point for use in Ptex texture lookups.
     // If Ptex isn't being used, then this value is ignored.
+	// 出版之后添加。形状可以选择提供带有交点的面索引，以用于Ptex 贴图查找索引。
+	// 如果没有使用Ptex 贴图，这个参数将被忽略
     int faceIndex = 0;
 };
 

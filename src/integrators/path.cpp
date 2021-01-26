@@ -83,17 +83,20 @@ Spectrum PathIntegrator::Li(const RayDifferential &r, const Scene &scene,
 
     for (bounces = 0;; ++bounces) {
         // Find next path vertex and accumulate contribution
-		// 找到下一个路径 并 计算贡献
+		// 找到下一个路径点 并 计算贡献
         VLOG(2) << "Path tracer bounce " << bounces << ", current L = " << L
                 << ", beta = " << beta;
 
         // Intersect _ray_ with scene and store intersection in _isect_
+		// 将 _ray_ 与场景相交并将相交位置存储在 _isect_
         SurfaceInteraction isect;
         bool foundIntersection = scene.Intersect(ray, &isect);
 
         // Possibly add emitted light at intersection
+		// 可以在相交点处添加自发光
         if (bounces == 0 || specularBounce) {
             // Add emitted light at path vertex or from the environment
+			// 在路径顶点或者从环境中添加自发光
             if (foundIntersection) {
                 L += beta * isect.Le(-ray.d);
                 VLOG(2) << "Added Le -> L = " << L;
@@ -105,9 +108,11 @@ Spectrum PathIntegrator::Li(const RayDifferential &r, const Scene &scene,
         }
 
         // Terminate path if ray escaped or _maxDepth_ was reached
+		// 如果光线逃逸 或 到达 _maxDepth_ 时，则终止路径
         if (!foundIntersection || bounces >= maxDepth) break;
 
         // Compute scattering functions and skip over medium boundaries
+		// 计算散射函数并跳过介质边界
         isect.ComputeScatteringFunctions(ray, arena, true);
         if (!isect.bsdf) {
             VLOG(2) << "Skipping intersection due to null bsdf";
@@ -120,6 +125,7 @@ Spectrum PathIntegrator::Li(const RayDifferential &r, const Scene &scene,
 
         // Sample illumination from lights to find path contribution.
         // (But skip this for perfectly specular BSDFs.)
+		// 从灯光中采样照明以得到路径贡献。（计算完美镜面的BSDF跳过此步骤）
         if (isect.bsdf->NumComponents(BxDFType(BSDF_ALL & ~BSDF_SPECULAR)) >
             0) {
             ++totalPaths;
@@ -132,6 +138,7 @@ Spectrum PathIntegrator::Li(const RayDifferential &r, const Scene &scene,
         }
 
         // Sample BSDF to get new path direction
+		// 采样 BSDF 来获得新的路径方向
         Vector3f wo = -ray.d, wi;
         Float pdf;
         BxDFType flags;
@@ -149,13 +156,16 @@ Spectrum PathIntegrator::Li(const RayDifferential &r, const Scene &scene,
             // Update the term that tracks radiance scaling for refraction
             // depending on whether the ray is entering or leaving the
             // medium.
+			// 根据射线进入还是离开介质，更新跟踪 radiance 的缩放比例项
             etaScale *= (Dot(wo, isect.n) > 0) ? (eta * eta) : 1 / (eta * eta);
         }
         ray = isect.SpawnRay(wi);
 
         // Account for subsurface scattering, if applicable
+		// 考虑次表面散射，如果适用
         if (isect.bssrdf && (flags & BSDF_TRANSMISSION)) {
             // Importance sample the BSSRDF
+			// BSSRDF 重要性采样
             SurfaceInteraction pi;
             Spectrum S = isect.bssrdf->Sample_S(
                 scene, sampler.Get1D(), sampler.Get2D(), arena, &pi, &pdf);
@@ -163,11 +173,13 @@ Spectrum PathIntegrator::Li(const RayDifferential &r, const Scene &scene,
             if (S.IsBlack() || pdf == 0) break;
             beta *= S / pdf;
 
-            // Account for the direct subsurface scattering component
+            // Account for the direct subsurface scattering component 
+			// 考虑直接光次表面散射
             L += beta * UniformSampleOneLight(pi, scene, arena, sampler, false,
                                               lightDistribution->Lookup(pi.p));
 
             // Account for the indirect subsurface scattering component
+			// 考虑间接光次表面散射
             Spectrum f = pi.bsdf->Sample_f(pi.wo, &wi, sampler.Get2D(), &pdf,
                                            BSDF_ALL, &flags);
             if (f.IsBlack() || pdf == 0) break;
@@ -179,6 +191,8 @@ Spectrum PathIntegrator::Li(const RayDifferential &r, const Scene &scene,
 
         // Possibly terminate the path with Russian roulette.
         // Factor out radiance scaling due to refraction in rrBeta.
+		// 可能会使用俄罗斯轮盘终止路径
+		// 将因rrBeta中的折射而导致的辐射比例缩放排除在外
         Spectrum rrBeta = beta * etaScale;
         if (rrBeta.MaxComponentValue() < rrThreshold && bounces > 3) {
             Float q = std::max((Float).05, 1 - rrBeta.MaxComponentValue());

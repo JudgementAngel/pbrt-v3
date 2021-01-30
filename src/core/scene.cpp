@@ -38,10 +38,12 @@
 namespace pbrt {
 
 STAT_COUNTER("Intersections/Regular ray intersection tests",
-             nIntersectionTests);
-STAT_COUNTER("Intersections/Shadow ray intersection tests", nShadowTests);
+             nIntersectionTests); // 常规射线相交测试
+STAT_COUNTER("Intersections/Shadow ray intersection tests", nShadowTests); // 阴影射线相交测试
 
 // Scene Method Definitions
+// 场景方法定义
+// @TODO
 bool Scene::Intersect(const Ray &ray, SurfaceInteraction *isect) const {
     ++nIntersectionTests;
     DCHECK_NE(ray.d, Vector3f(0,0,0));

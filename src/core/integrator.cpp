@@ -87,6 +87,7 @@ Spectrum UniformSampleOneLight(const Interaction &it, const Scene &scene,
                                bool handleMedia, const Distribution1D *lightDistrib) {
     ProfilePhase p(Prof::DirectLighting);
     // Randomly choose a single light to sample, _light_
+	// 随机选择一个光源进行采样 _light_
     int nLights = int(scene.lights.size());
     if (nLights == 0) return Spectrum(0.f);
     int lightNum;
@@ -113,6 +114,7 @@ Spectrum EstimateDirect(const Interaction &it, const Point2f &uScattering,
         specular ? BSDF_ALL : BxDFType(BSDF_ALL & ~BSDF_SPECULAR);
     Spectrum Ld(0.f);
     // Sample light source with multiple importance sampling
+	// 多个重要性采样方式采样光源
     Vector3f wi;
     Float lightPdf = 0, scatteringPdf = 0;
     VisibilityTester visibility;
@@ -121,9 +123,11 @@ Spectrum EstimateDirect(const Interaction &it, const Point2f &uScattering,
             << wi << ", pdf: " << lightPdf;
     if (lightPdf > 0 && !Li.IsBlack()) {
         // Compute BSDF or phase function's value for light sample
+		// 为灯光采样计算BSDF 或 相位函数值
         Spectrum f;
         if (it.IsSurfaceInteraction()) {
             // Evaluate BSDF for light sampling strategy
+			// 评估 BSDF 的光采样策略
             const SurfaceInteraction &isect = (const SurfaceInteraction &)it;
             f = isect.bsdf->f(isect.wo, wi, bsdfFlags) *
                 AbsDot(wi, isect.shading.n);
@@ -131,6 +135,7 @@ Spectrum EstimateDirect(const Interaction &it, const Point2f &uScattering,
             VLOG(2) << "  surf f*dot :" << f << ", scatteringPdf: " << scatteringPdf;
         } else {
             // Evaluate phase function for light sampling strategy
+			// 评估 相位函数 的光采样策略
             const MediumInteraction &mi = (const MediumInteraction &)it;
             Float p = mi.phase->p(mi.wo, wi);
             f = Spectrum(p);
@@ -139,6 +144,7 @@ Spectrum EstimateDirect(const Interaction &it, const Point2f &uScattering,
         }
         if (!f.IsBlack()) {
             // Compute effect of visibility for light source sample
+			// 计算光源可见度的影响
             if (handleMedia) {
                 Li *= visibility.Tr(scene, sampler);
                 VLOG(2) << "  after Tr, Li: " << Li;
@@ -151,6 +157,7 @@ Spectrum EstimateDirect(const Interaction &it, const Point2f &uScattering,
             }
 
             // Add light's contribution to reflected radiance
+			// 增加光对反射辐射的贡献
             if (!Li.IsBlack()) {
                 if (IsDeltaLight(light.flags))
                     Ld += f * Li / lightPdf;
@@ -164,11 +171,13 @@ Spectrum EstimateDirect(const Interaction &it, const Point2f &uScattering,
     }
 
     // Sample BSDF with multiple importance sampling
+	// 使用多重重要度采样BSDF
     if (!IsDeltaLight(light.flags)) {
         Spectrum f;
         bool sampledSpecular = false;
         if (it.IsSurfaceInteraction()) {
             // Sample scattered direction for surface interactions
+			// 采样散射方向以进行表面相互作用
             BxDFType sampledType;
             const SurfaceInteraction &isect = (const SurfaceInteraction &)it;
             f = isect.bsdf->Sample_f(isect.wo, &wi, uScattering, &scatteringPdf,
@@ -177,6 +186,7 @@ Spectrum EstimateDirect(const Interaction &it, const Point2f &uScattering,
             sampledSpecular = (sampledType & BSDF_SPECULAR) != 0;
         } else {
             // Sample scattered direction for medium interactions
+			// 采样散射方向进行介质内的相互作用
             const MediumInteraction &mi = (const MediumInteraction &)it;
             Float p = mi.phase->Sample_p(mi.wo, &wi, uScattering);
             f = Spectrum(p);
@@ -186,6 +196,7 @@ Spectrum EstimateDirect(const Interaction &it, const Point2f &uScattering,
             scatteringPdf;
         if (!f.IsBlack() && scatteringPdf > 0) {
             // Account for light contributions along sampled direction _wi_
+			// 考虑沿着方向_wi_的光贡献
             Float weight = 1;
             if (!sampledSpecular) {
                 lightPdf = light.Pdf_Li(it, wi);
@@ -194,6 +205,7 @@ Spectrum EstimateDirect(const Interaction &it, const Point2f &uScattering,
             }
 
             // Find intersection and compute transmittance
+			// 找到相交点并计算透射率
             SurfaceInteraction lightIsect;
             Ray ray = it.SpawnRay(wi);
             Spectrum Tr(1.f);
@@ -202,6 +214,7 @@ Spectrum EstimateDirect(const Interaction &it, const Point2f &uScattering,
                             : scene.Intersect(ray, &lightIsect);
 
             // Add light contribution from material sampling
+			// 从材质采样中增加光贡献度
             Spectrum Li(0.f);
             if (foundSurfaceInteraction) {
                 if (lightIsect.primitive->GetAreaLight() == &light)
@@ -299,7 +312,6 @@ void SamplerIntegrator::Render(const Scene &scene) {
                         1 / std::sqrt((Float)tileSampler->samplesPerPixel));
                     ++nCameraRays;
 
-					// @$
                     // Evaluate radiance along camera ray
 					// 评估沿摄像机光线的辐射
                     Spectrum L(0.f);

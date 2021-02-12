@@ -102,8 +102,10 @@ void SurfaceInteraction::ComputeDifferentials(
     const RayDifferential &ray) const {
     if (ray.hasDifferentials) {
         // Estimate screen space change in $\pt{}$ and $(u,v)$
+		// 估算$\pt{}$ 和 $(u,v)$ 中的屏幕空间的变化
 
         // Compute auxiliary intersection points with plane
+		// 用平面计算辅助交叉点
         Float d = Dot(n, Vector3f(p.x, p.y, p.z));
         Float tx =
             -(Dot(n, Vector3f(ray.rxOrigin)) - d) / Dot(n, ray.rxDirection);
@@ -117,8 +119,10 @@ void SurfaceInteraction::ComputeDifferentials(
         dpdy = py - p;
 
         // Compute $(u,v)$ offsets at auxiliary points
+		// 计算辅助点 $(u,v)$ 偏移
 
         // Choose two dimensions to use for ray offset computation
+		// 选择二维以用于射线偏移计算
         int dim[2];
         if (std::abs(n.x) > std::abs(n.y) && std::abs(n.x) > std::abs(n.z)) {
             dim[0] = 1;
@@ -132,6 +136,7 @@ void SurfaceInteraction::ComputeDifferentials(
         }
 
         // Initialize _A_, _Bx_, and _By_ matrices for offset computation
+		// 初始化 _A_,_Bx_,_By_矩阵来进行偏移量计算
         Float A[2][2] = {{dpdu[dim[0]], dpdv[dim[0]]},
                          {dpdu[dim[1]], dpdv[dim[1]]}};
         Float Bx[2] = {px[dim[0]] - p[dim[0]], px[dim[1]] - p[dim[1]]};
